@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lab 1 – Clone Phishing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f6f7fb;
+    }
+    .lab-nav {
+      border-bottom: 1px solid #dbe1ec;
+      padding: 1rem 0;
+    }
+    .lab-progress {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .progress-pill {
+      border: none;
+      border-radius: 999px;
+      padding: 0.5rem 1.25rem;
+      background: #e2e8f7;
+      color: #1f2a4a;
+      font-weight: 600;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .progress-pill.active {
+      background: linear-gradient(135deg, #1f6feb, #8046f5);
+      color: #fff;
+      box-shadow: 0 0.5rem 1.5rem rgba(31, 111, 235, 0.18);
+      transform: translateY(-1px);
+    }
+    .progress-pill:focus {
+      outline: 3px solid rgba(31, 111, 235, 0.3);
+      outline-offset: 2px;
+    }
+    .lab-step {
+      display: none;
+    }
+    .lab-step.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .email-card {
+      background: #fff;
+      border-radius: 0.75rem;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+    .email-header {
+      background: linear-gradient(135deg, #1f6feb, #8046f5);
+      color: #fff;
+      padding: 1.25rem;
+    }
+    .email-body {
+      padding: 1.5rem;
+    }
+    .flag-pill {
+      background-color: rgba(220, 53, 69, 0.15);
+      border-left: 4px solid #dc3545;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+    .clone-hero {
+      background: linear-gradient(125deg, rgba(31, 111, 235, 0.15), rgba(128, 70, 245, 0.2));
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    .fake-login {
+      background: #fff;
+      border-radius: 0.75rem;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+      padding: 1.5rem;
+    }
+    .flag-list .list-group-item {
+      border: none;
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 0.4rem 1rem rgba(15, 23, 42, 0.06);
+    }
+    .flag-list .btn,
+    .flag-list .form-check-input {
+      cursor: pointer;
+    }
+    .quiz-result {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      display: none;
+    }
+    .quiz-result.correct {
+      background-color: rgba(25, 135, 84, 0.12);
+      border-left: 4px solid #198754;
+    }
+    .quiz-result.incorrect {
+      background-color: rgba(220, 53, 69, 0.12);
+      border-left: 4px solid #dc3545;
+    }
+    code {
+      background: #0d1117;
+      border-radius: 0.5rem;
+      color: #fff;
+      display: block;
+      padding: 1rem;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <nav class="lab-nav d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+      <div>
+        <h1 class="h3 mb-0">Lab 1 – Clone Phishing</h1>
+        <p class="text-muted mb-0">Investigate the lure, inspect the cloned portal, then decide how to respond.</p>
+      </div>
+      <a href="index.html" class="btn btn-outline-primary btn-sm">← Back to Lab Index</a>
+    </nav>
+
+    <div class="lab-progress mb-4" role="tablist" aria-label="Lab steps">
+      <button class="progress-pill active" data-step="1" role="tab" aria-selected="true">1. Investigate Email</button>
+      <button class="progress-pill" data-step="2" role="tab" aria-selected="false">2. Inspect Clone Portal</button>
+      <button class="progress-pill" data-step="3" role="tab" aria-selected="false">3. Respond &amp; Capture Flag</button>
+    </div>
+
+    <section class="lab-step active" data-step="1" aria-labelledby="stepOneHeading">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+          <div class="email-card">
+            <div class="email-header">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <h2 class="h5 mb-1" id="stepOneHeading">HR Benefits Portal &mdash; Immediate Action Required</h2>
+                  <span class="small">From: <strong>hr-updates@peakbeneflts.com</strong></span>
+                </div>
+                <span class="badge bg-warning text-dark">Suspicious</span>
+              </div>
+            </div>
+            <div class="email-body">
+              <p>Hi Taylor,</p>
+              <p>
+                Our annual enrollment window <strong>has been unexpectedly shortened</strong> to comply with new
+                corporate policies. To avoid interruption of your benefits, log in to the HR portal within the next
+                <strong>30 minutes</strong> and confirm your selections.
+              </p>
+              <p class="mb-3">Use the secure link below and your normal network password to confirm your enrollment:</p>
+              <p class="mb-3"><a href="#" id="clonePortalLink" class="btn btn-primary btn-sm">Open HR Portal</a></p>
+              <p class="mb-3">If you fail to respond, your benefits will reset to the default option for the next 12 months.</p>
+              <p>Regards,<br>Alex Morgan<br>HR Operations</p>
+              <hr>
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-outline-danger btn-sm" data-bs-toggle="collapse" data-bs-target="#flagIndicators" aria-expanded="false" aria-controls="flagIndicators">Reveal suspicious indicators</button>
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#rawHeaders" aria-expanded="false" aria-controls="rawHeaders">View raw email header</button>
+              </div>
+              <div class="collapse mt-3" id="flagIndicators">
+                <div class="flag-pill mb-2">
+                  🚩 The sender domain <strong>peakbeneflts.com</strong> swaps the letter “i” for “l” &mdash; a classic typo-squatting trick.
+                </div>
+                <div class="flag-pill mb-2">
+                  🚩 Artificial urgency (“30 minutes”) pressures you to bypass verification steps.
+                </div>
+                <div class="flag-pill">
+                  🚩 Hovering over the button reveals a <span class="text-decoration-underline">non-corporate tracking URL</span>.
+                </div>
+              </div>
+              <div class="collapse mt-3" id="rawHeaders">
+                <code>
+Return-Path: &lt;hr-updates@peakbeneflts.com&gt;
+Received: from mail.peakbeneflts.com (185.201.12.43)
+Authentication-Results: spf=fail (sender IP not authorized)
+X-LinkScan: flagged clone portal redirect
+                </code>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="clone-hero h-100 d-flex flex-column justify-content-center">
+            <h2 class="h5">Step 1 Goal</h2>
+            <p class="text-muted mb-4">
+              Identify phishing traits before you click. Toggle the hints, hover the link, and note every indicator. Once
+              you feel confident you have enough evidence, move on to inspect the cloned portal.
+            </p>
+            <ul class="list-unstyled mb-0 text-muted small">
+              <li class="mb-2">📧 Verify the sending domain letter by letter.</li>
+              <li class="mb-2">⏱ Question sudden deadlines or penalties.</li>
+              <li>🔗 Hover over links to check the true destination.</li>
+            </ul>
+            <button class="btn btn-outline-primary mt-4 next-step" data-target="2">Continue to the clone portal</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lab-step" data-step="2" aria-labelledby="stepTwoHeading" aria-hidden="true">
+      <div class="row g-4 align-items-stretch">
+        <div class="col-lg-7">
+          <div class="fake-login h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h2 class="h5 mb-0" id="stepTwoHeading">Peak Benefits Portal</h2>
+                <small class="text-muted">https://hr-portal-peakbenefits.com.security-update.io/login</small>
+              </div>
+              <span class="badge bg-danger">Clone Detected</span>
+            </div>
+            <form>
+              <div class="mb-3">
+                <label for="inputEmail" class="form-label">Corporate Email</label>
+                <input type="email" class="form-control" id="inputEmail" placeholder="name@company.com">
+                <div class="form-text text-danger" id="emailWarning" hidden>⚠️ Auto-filled email captured for reuse.</div>
+              </div>
+              <div class="mb-3">
+                <label for="inputPassword" class="form-label">Network Password</label>
+                <div class="input-group">
+                  <input type="password" class="form-control" id="inputPassword" placeholder="••••••••">
+                  <button type="button" class="btn btn-outline-secondary" id="togglePassword">Show</button>
+                </div>
+                <div class="form-text text-danger" id="passwordWarning" hidden>⚠️ Password sent to remote server.</div>
+              </div>
+              <div class="mb-3">
+                <label for="inputToken" class="form-label">One-Time Token</label>
+                <input type="text" class="form-control" id="inputToken" placeholder="123456">
+                <div class="form-text text-danger" id="tokenWarning" hidden>⚠️ Attacker bypasses MFA by capturing token live.</div>
+              </div>
+              <button type="button" class="btn btn-primary w-100" id="submitClone">Sign In</button>
+              <p class="small text-muted mt-3 mb-0">Notice the untrusted domain, missing HTTPS lock icon, and mismatched fonts that differ from your legitimate HR portal.</p>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="h-100 d-flex flex-column justify-content-between">
+            <div class="card shadow-sm mb-3">
+              <div class="card-body">
+                <h3 class="h6">Flag: Clone Portal Artifacts</h3>
+                <p class="text-muted small mb-3">Click the items you observe to log evidence.</p>
+                <div class="list-group flag-list" id="cloneFlags">
+                  <label class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Domain mismatch (security-update.io)</span>
+                    <input class="form-check-input" type="checkbox" value="domain">
+                  </label>
+                  <label class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Broken favicon / padlock</span>
+                    <input class="form-check-input" type="checkbox" value="favicon">
+                  </label>
+                  <label class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Generic greeting &amp; brand inconsistency</span>
+                    <input class="form-check-input" type="checkbox" value="greeting">
+                  </label>
+                  <label class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>Unsecured form posts credentials in plain text</span>
+                    <input class="form-check-input" type="checkbox" value="plaintext">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="card shadow-sm">
+              <div class="card-body">
+                <h3 class="h6">Captured Evidence</h3>
+                <ul class="small text-muted" id="evidenceLog">
+                  <li>No evidence logged yet.</li>
+                </ul>
+              </div>
+            </div>
+            <button class="btn btn-outline-primary mt-3 next-step align-self-end" data-target="3">Proceed to response plan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lab-step" data-step="3" aria-labelledby="stepThreeHeading" aria-hidden="true">
+      <div class="row g-4">
+        <div class="col-lg-7">
+          <div class="card shadow-sm">
+            <div class="card-body p-4">
+              <h2 class="h5 mb-3" id="stepThreeHeading">Knowledge Check</h2>
+              <p class="text-muted">Answer the questions below to reveal the final learning flag.</p>
+              <form id="quizForm" class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Why is the email sender suspicious?</label>
+                  <select class="form-select" name="sender" required>
+                    <option value="">Select an answer</option>
+                    <option value="domain">The domain uses a typo that swaps letters.</option>
+                    <option value="reply-to">The Reply-To points to HR.</option>
+                    <option value="bcc">The BCC field is empty.</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">How does the clone bypass MFA?</label>
+                  <select class="form-select" name="mfa" required>
+                    <option value="">Select an answer</option>
+                    <option value="capture">It captures the one-time token and relays it.</option>
+                    <option value="disable">It disables MFA on the server.</option>
+                    <option value="vpn">It forces a VPN login first.</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Best immediate response?</label>
+                  <select class="form-select" name="response" required>
+                    <option value="">Select an answer</option>
+                    <option value="report">Report the message and confirm via trusted channels.</option>
+                    <option value="ignore">Ignore the email completely.</option>
+                    <option value="reset">Reset your password using the provided link.</option>
+                  </select>
+                </div>
+                <div class="col-12 d-flex justify-content-between align-items-center mt-3">
+                  <button type="submit" class="btn btn-success">Submit Answers</button>
+                  <span class="badge bg-light text-success border border-success" id="finalFlag" hidden>FLAG-CLONE-PROTECTED</span>
+                </div>
+              </form>
+              <div class="quiz-result correct mt-3" id="quizSuccess">
+                ✅ Correct! The final flag is <strong>FLAG-CLONE-PROTECTED</strong>. Document it in your lab notes.
+              </div>
+              <div class="quiz-result incorrect mt-3" id="quizFailure">
+                ❌ Not quite. Review the clues in the email and clone portal, then try again.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="card shadow-sm mb-3">
+            <div class="card-body">
+              <h3 class="h6">Response Playbook</h3>
+              <ol class="small text-muted ps-3">
+                <li class="mb-2">Stop and document the suspicious email without interacting further.</li>
+                <li class="mb-2">Report the message to your security operations channel.</li>
+                <li>Change any credentials you shared and monitor for suspicious logins.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h3 class="h6">Lab Wrap-Up</h3>
+              <p class="small text-muted mb-3">Summarize what you learned before closing the exercise.</p>
+              <ul class="small text-muted mb-3">
+                <li>Clone portals copy brand assets but can’t match every detail.</li>
+                <li>MFA is only effective if the token stays with you.</li>
+                <li>Prompt reporting protects teammates from the same trap.</li>
+              </ul>
+              <div class="alert alert-info mb-0" role="status">
+                Save the flag above as proof of completion and share your notes with your training facilitator.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center text-muted small pb-4">
+      <p class="mb-1">Practice safe credential handling &mdash; always validate the sender and destination URL.</p>
+      <p class="mb-0">Phishing Awareness Labs &copy; 2024</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const clonePortalLink = document.getElementById('clonePortalLink');
+    const emailWarning = document.getElementById('emailWarning');
+    const passwordWarning = document.getElementById('passwordWarning');
+    const tokenWarning = document.getElementById('tokenWarning');
+    const togglePassword = document.getElementById('togglePassword');
+    const submitClone = document.getElementById('submitClone');
+    const evidenceLog = document.getElementById('evidenceLog');
+    const cloneFlags = document.getElementById('cloneFlags');
+    const quizForm = document.getElementById('quizForm');
+    const quizSuccess = document.getElementById('quizSuccess');
+    const quizFailure = document.getElementById('quizFailure');
+    const finalFlag = document.getElementById('finalFlag');
+    const labSteps = document.querySelectorAll('.lab-step');
+    const progressPills = document.querySelectorAll('.progress-pill');
+    const nextStepButtons = document.querySelectorAll('.next-step');
+
+    const alertDuration = 3500;
+    let activeAlert;
+
+    const setActiveStep = (step) => {
+      labSteps.forEach((section) => {
+        const isActive = section.dataset.step === step;
+        section.classList.toggle('active', isActive);
+        section.setAttribute('aria-hidden', (!isActive).toString());
+      });
+
+      progressPills.forEach((pill) => {
+        const isActive = pill.dataset.step === step;
+        pill.classList.toggle('active', isActive);
+        pill.setAttribute('aria-selected', isActive.toString());
+      });
+    };
+
+    progressPills.forEach((pill) => {
+      pill.addEventListener('click', () => setActiveStep(pill.dataset.step));
+    });
+
+    nextStepButtons.forEach((button) => {
+      button.addEventListener('click', () => setActiveStep(button.dataset.target));
+    });
+
+    clonePortalLink.addEventListener('click', (event) => {
+      event.preventDefault();
+      document.getElementById('inputEmail').focus();
+      emailWarning.hidden = false;
+      passwordWarning.hidden = false;
+      tokenWarning.hidden = false;
+    });
+
+    togglePassword.addEventListener('click', () => {
+      const type = togglePassword.dataset.visible === 'true' ? 'password' : 'text';
+      document.getElementById('inputPassword').setAttribute('type', type);
+      togglePassword.dataset.visible = (type === 'text').toString();
+      togglePassword.textContent = type === 'text' ? 'Hide' : 'Show';
+    });
+
+    submitClone.addEventListener('click', () => {
+      if (activeAlert) {
+        activeAlert.remove();
+      }
+
+      const alert = document.createElement('div');
+      alert.className = 'alert alert-danger mt-3';
+      alert.textContent = 'Credentials exfiltrated! The clone immediately sends your details to the attacker.';
+      submitClone.insertAdjacentElement('afterend', alert);
+      submitClone.disabled = true;
+      activeAlert = alert;
+
+      setTimeout(() => {
+        alert.remove();
+        submitClone.disabled = false;
+        activeAlert = null;
+      }, alertDuration);
+    });
+
+    cloneFlags.addEventListener('change', () => {
+      const checked = cloneFlags.querySelectorAll('input:checked');
+      evidenceLog.innerHTML = '';
+
+      if (!checked.length) {
+        evidenceLog.innerHTML = '<li>No evidence logged yet.</li>';
+        return;
+      }
+
+      checked.forEach((input) => {
+        const item = document.createElement('li');
+        item.textContent = input.parentElement.querySelector('span').textContent;
+        evidenceLog.appendChild(item);
+      });
+    });
+
+    quizForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(quizForm);
+      const answers = {
+        sender: 'domain',
+        mfa: 'capture',
+        response: 'report'
+      };
+
+      const correct = Object.entries(answers).every(([key, value]) => formData.get(key) === value);
+
+      quizSuccess.style.display = 'none';
+      quizFailure.style.display = 'none';
+
+      if (correct) {
+        quizSuccess.style.display = 'block';
+        finalFlag.hidden = false;
+        setActiveStep('3');
+      } else {
+        quizFailure.style.display = 'block';
+        finalFlag.hidden = true;
+      }
+    });
+  </script>
+</body>
+</html>
