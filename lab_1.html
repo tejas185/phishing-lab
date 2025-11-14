@@ -4,57 +4,34 @@
   <meta charset="utf-8">
   <title>Lab 1 – Clone Phishing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <style>
     body {
-      background-color: #f6f7fb;
+      background-color: #f5f7fb;
+      color: #1f2937;
     }
-    .lab-nav {
-      border-bottom: 1px solid #dbe1ec;
-      padding: 1rem 0;
-    }
-    .lab-progress {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-    .progress-pill {
-      border: none;
-      border-radius: 999px;
-      padding: 0.5rem 1.25rem;
-      background: #e2e8f7;
-      color: #1f2a4a;
-      font-weight: 600;
-      transition: background 0.2s ease, transform 0.2s ease;
-    }
-    .progress-pill.active {
-      background: linear-gradient(135deg, #1f6feb, #8046f5);
-      color: #fff;
-      box-shadow: 0 0.5rem 1.5rem rgba(31, 111, 235, 0.18);
-      transform: translateY(-1px);
-    }
-    .progress-pill:focus {
-      outline: 3px solid rgba(31, 111, 235, 0.3);
-      outline-offset: 2px;
+    .lab-hero {
+      background: linear-gradient(135deg, rgba(31, 111, 235, 0.12), rgba(128, 70, 245, 0.2));
+      border-radius: 1rem;
+      padding: 2.5rem;
     }
     .lab-step {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      margin-bottom: 2rem;
       display: none;
     }
     .lab-step.active {
       display: block;
-      animation: fadeIn 0.25s ease;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .lab-step h2 {
+      font-size: 1.35rem;
     }
-    .email-card {
+    .email-example {
       background: #fff;
-      border-radius: 0.75rem;
-      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+      border-radius: 1rem;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
       overflow: hidden;
     }
     .email-header {
@@ -66,416 +43,882 @@
       padding: 1.5rem;
     }
     .flag-pill {
-      background-color: rgba(220, 53, 69, 0.15);
+      background: rgba(220, 53, 69, 0.12);
       border-left: 4px solid #dc3545;
-      border-radius: 0.5rem;
+      border-radius: 0.75rem;
       padding: 0.75rem 1rem;
-      font-size: 0.9rem;
     }
-    .clone-hero {
-      background: linear-gradient(125deg, rgba(31, 111, 235, 0.15), rgba(128, 70, 245, 0.2));
-      border-radius: 1rem;
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .portal-preview {
+      border: 1px dashed #cbd5f5;
+      border-radius: 0.75rem;
       padding: 1.5rem;
+      text-align: center;
+      background: #fff;
     }
-    .fake-login {
+    .portal-preview img {
+      max-width: 100%;
+      border-radius: 0.75rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.12);
+    }
+    .knowledge-card {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+    }
+    .knowledge-card details {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+    .mcq-form {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: #f9fafc;
+    }
+    .mcq-form .form-check {
+      margin-bottom: 0.5rem;
+    }
+    .mcq-feedback {
+      min-height: 1.5rem;
+      font-weight: 600;
+    }
+    .mcq-feedback.correct {
+      color: #198754;
+    }
+    .mcq-feedback.incorrect {
+      color: #dc3545;
+    }
+    .flag-banner {
+      background: rgba(25, 135, 84, 0.12);
+      border-left: 4px solid #198754;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+      color: #0f5132;
+    }
+    .progress-tracker {
       background: #fff;
       border-radius: 0.75rem;
       box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
-      padding: 1.5rem;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
     }
-    .flag-list .list-group-item {
-      border: none;
-      border-radius: 0.75rem;
-      margin-bottom: 0.75rem;
-      box-shadow: 0 0.4rem 1rem rgba(15, 23, 42, 0.06);
-    }
-    .flag-list .btn,
-    .flag-list .form-check-input {
+    .tracker-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 0;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    .quiz-result {
-      border-radius: 0.75rem;
-      padding: 1rem;
-      display: none;
+    .tracker-circle {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      border: 2px solid #cbd5f5;
+      background: #f8f9ff;
+      font-weight: 600;
     }
-    .quiz-result.correct {
-      background-color: rgba(25, 135, 84, 0.12);
-      border-left: 4px solid #198754;
+    .tracker-step.active {
+      color: #1f2937;
+      cursor: default;
     }
-    .quiz-result.incorrect {
-      background-color: rgba(220, 53, 69, 0.12);
-      border-left: 4px solid #dc3545;
+    .tracker-step:focus {
+      outline: none;
     }
-    code {
-      background: #0d1117;
-      border-radius: 0.5rem;
+    .tracker-step:focus-visible .tracker-circle {
+      box-shadow: 0 0 0 4px rgba(31, 111, 235, 0.35);
+    }
+    .tracker-step.active .tracker-circle {
+      border-color: #1f6feb;
+      background: #1f6feb;
       color: #fff;
-      display: block;
-      padding: 1rem;
-      white-space: pre-wrap;
+      box-shadow: 0 0.5rem 1rem rgba(31, 111, 235, 0.25);
+    }
+    .tracker-step.completed .tracker-circle {
+      border-color: #1f6feb;
+      background: rgba(31, 111, 235, 0.12);
+      color: #1f6feb;
+    }
+    .step-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+    .step-nav .btn {
+      flex: 1;
+      min-width: 10rem;
+    }
+    @media (max-width: 576px) {
+      .step-nav {
+        flex-direction: column;
+      }
+      .step-nav .btn {
+        width: 100%;
+      }
+    }
+    .lab-modules .module-card {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .module-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .module-body {
+      padding: 1.75rem;
+    }
+    footer {
+      color: #6b7280;
     }
   </style>
 </head>
 <body>
   <div class="container py-4">
-    <nav class="lab-nav d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-      <div>
-        <h1 class="h3 mb-0">Clone Phishing</h1>
-        <p class="text-muted mb-0">Investigate the lure, inspect the cloned portal, then decide how to respond.</p>
+    <header class="lab-hero mb-5">
+      <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
+        <div>
+          <h1 class="display-6 fw-semibold mb-2">Lab 1 – Clone Phishing</h1>
+          <p class="mb-0 lead text-secondary">A guided, self-paced simulation: investigate the lure, analyse the cloned portal, and capture the completion flag.</p>
+        </div>
+        <a class="btn btn-outline-light text-dark bg-white" href="index.html">← Back to Lab Index</a>
       </div>
-      <a href="index.html" class="btn btn-outline-primary btn-sm">← Back to Lab Index</a>
+    </header>
+
+    <nav class="progress-tracker d-flex align-items-center justify-content-between gap-3 flex-column flex-md-row text-center" aria-label="Lab progression">
+      <button type="button" class="tracker-step active" data-step="1" aria-current="step">
+        <span class="tracker-circle">1</span>
+        <span>Scenario Brief</span>
+      </button>
+      <button type="button" class="tracker-step" data-step="2">
+        <span class="tracker-circle">2</span>
+        <span>Visual Reference</span>
+      </button>
+      <button type="button" class="tracker-step" data-step="3">
+        <span class="tracker-circle">3</span>
+        <span>Assessment</span>
+      </button>
     </nav>
 
-    <div class="lab-progress mb-4" role="tablist" aria-label="Lab steps">
-      <button class="progress-pill active" data-step="1" role="tab" aria-selected="true">1. Investigate Email</button>
-      <button class="progress-pill" data-step="2" role="tab" aria-selected="false">2. Inspect Clone Portal</button>
-      <button class="progress-pill" data-step="3" role="tab" aria-selected="false">3. Respond &amp; Capture Flag</button>
-    </div>
-
-    <section class="lab-step active" data-step="1" aria-labelledby="stepOneHeading">
-      <div class="row g-4 align-items-center">
+    <section class="lab-step active p-4" id="step-1" data-step="1">
+      <div class="row g-4 align-items-start">
         <div class="col-lg-6">
-          <div class="email-card">
+          <h2 class="fw-semibold">Step 1 · Scenario Brief</h2>
+          <p class="text-secondary">Review the incident narrative that frames this multiple-choice assessment. All questions reference details from this summary and the artefacts on the right.</p>
+          <p class="text-secondary">Taylor receives a message claiming to be from HR with a shortened enrolment window and a portal link. The sender uses a lookalike domain, and the call to action pressures the employee to log in immediately. In the original email, hovering the call-to-action reveals the attacker-controlled domain; use the button below to open the cloned portal reference.</p>
+          <details class="mt-3">
+            <summary>Key facts to remember</summary>
+            <div class="flag-pill mt-3">
+              🚩 Sender: <strong>hr-updates@peakbeneflts.com</strong> (second "i" swapped to "l").
+            </div>
+            <div class="flag-pill mt-2">
+              🚩 Deadline tactic: “Log in within 30 minutes or lose coverage.”
+            </div>
+            <div class="flag-pill mt-2">
+              🚩 Hover URL: <code class="d-inline">https://security-update.io/hr-login</code>.
+            </div>
+          </details>
+        </div>
+        <div class="col-lg-6">
+          <div class="email-example">
             <div class="email-header">
               <div class="d-flex justify-content-between align-items-start">
                 <div>
-                  <h2 class="h5 mb-1" id="stepOneHeading">HR Benefits Portal &mdash; Immediate Action Required</h2>
-                  <span class="small">From: <strong>hr-updates@peakbeneflts.com</strong></span>
+                  <h3 class="h5 mb-1">HR Benefits Portal — Immediate Action Required</h3>
+                  <p class="small mb-0">From: hr-updates@peakbeneflts.com</p>
                 </div>
                 <span class="badge bg-warning text-dark">Suspicious</span>
               </div>
             </div>
             <div class="email-body">
-              <p>Hi User,</p>
-              <p>
-                Our annual enrollment window <strong>has been unexpectedly shortened</strong> to comply with new
-                corporate policies. To avoid interruption of your benefits, log in to the HR portal within the next
-                <strong>30 minutes</strong> and confirm your selections.
-              </p>
+              <p>Hi Taylor,</p>
+              <p>Our annual enrollment window has been unexpectedly shortened. To avoid interruption of your benefits, log in within the next <strong>30 minutes</strong> and confirm your selections.</p>
               <p class="mb-3">Use the secure link below and your normal network password to confirm your enrollment:</p>
-              <p class="mb-3"><a href="#" id="clonePortalLink" class="btn btn-primary btn-sm">Open HR Portal</a></p>
-              <p class="mb-3">If you fail to respond, your benefits will reset to the default option for the next 12 months.</p>
-              <p>Regards,<br>Alex Morgan<br>HR Operations</p>
+              <p class="mb-3">
+                <button type="button" class="btn btn-primary btn-sm jump-step" data-target="2">Open HR Portal</button>
+              </p>
+              <p>If you fail to respond, your benefits will reset to the default option for the next 12 months.</p>
+              <p class="mb-0">Regards,<br>Alex Morgan<br>HR Operations</p>
               <hr>
-              <div class="d-flex flex-wrap gap-2">
-                <button class="btn btn-outline-danger btn-sm" data-bs-toggle="collapse" data-bs-target="#flagIndicators" aria-expanded="false" aria-controls="flagIndicators">Reveal suspicious indicators</button>
-                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="collapse" data-bs-target="#rawHeaders" aria-expanded="false" aria-controls="rawHeaders">View raw email header</button>
-              </div>
-              <div class="collapse mt-3" id="flagIndicators">
-                <div class="flag-pill mb-2">
-                  🚩 The sender domain <strong>peakbeneflts.com</strong> swaps the letter “i” for “l” &mdash; a classic typo-squatting trick.
-                </div>
-                <div class="flag-pill mb-2">
-                  🚩 Artificial urgency (“30 minutes”) pressures you to bypass verification steps.
-                </div>
-                <div class="flag-pill">
-                  🚩 Hovering over the button reveals a <span class="text-decoration-underline">non-corporate tracking URL</span>.
-                </div>
-              </div>
-              <div class="collapse mt-3" id="rawHeaders">
-                <code>
-Return-Path: &lt;hr-updates@peakbeneflts.com&gt;
+              <p class="small text-secondary mb-1">Header excerpt:</p>
+              <code class="d-block p-3 bg-dark text-white rounded">Return-Path: &lt;hr-updates@peakbeneflts.com&gt;
 Received: from mail.peakbeneflts.com (185.201.12.43)
 Authentication-Results: spf=fail (sender IP not authorized)
 X-LinkScan: flagged clone portal redirect
-                </code>
-              </div>
+              </code>
             </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <div class="clone-hero h-100 d-flex flex-column justify-content-center">
-            <h2 class="h5">Step 1 Goal</h2>
-            <p class="text-muted mb-4">
-              Identify phishing traits before you click. Toggle the hints, hover the link, and note every indicator. Once
-              you feel confident you have enough evidence, move on to inspect the cloned portal.
-            </p>
-            <ul class="list-unstyled mb-0 text-muted small">
-              <li class="mb-2">📧 Verify the sending domain letter by letter.</li>
-              <li class="mb-2">⏱ Question sudden deadlines or penalties.</li>
-              <li>🔗 Hover over links to check the true destination.</li>
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn btn-outline-secondary btn-sm disabled" aria-disabled="true" disabled>Back</button>
+        <button type="button" class="btn btn-primary btn-sm next-step" data-next="2">Continue to Visual Reference</button>
+      </div>
+    </section>
+
+    <section class="lab-step p-4" id="step-2" data-step="2">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-6 order-lg-2">
+          <h2 class="fw-semibold">Step 2 · Visual Reference</h2>
+          <p class="text-secondary">The HR portal shown here is a clone designed to harvest credentials. Cross-reference the visual cues and technical artefacts with the scenario brief before answering the questions.</p>
+          <ul class="text-secondary">
+            <li class="mb-2">Address bar: <strong>https://security-update.io</strong> without a trusted certificate.</li>
+            <li class="mb-2">Branding mismatches include outdated logos and inconsistent colour usage.</li>
+            <li>Credential submissions post to <code class="d-inline">http://api.security-update.io/collect</code> over plain HTTP.</li>
+          </ul>
+          <details class="mt-3">
+            <summary>Clone portal artefacts</summary>
+            <ul class="mt-3 text-secondary">
+              <li>Warning banner added by the SOC advising users not to submit credentials.</li>
+              <li>Multi-factor token prompt appears on the same page as the password box.</li>
+              <li>Footer copyright still references a 2021 vendor acquisition.</li>
             </ul>
-            <button class="btn btn-outline-primary mt-4 next-step" data-target="2">Continue to the clone portal</button>
+          </details>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <div class="portal-preview">
+            <p class="text-muted mb-3">Cloned portal reference</p>
+            <img src="https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=900&q=80" alt="Mock HR portal screenshot">
+            <p class="small text-secondary mt-3 mb-0">Study the URL bar, login prompts, and footer text for inconsistencies.</p>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn btn-outline-secondary btn-sm prev-step" data-prev="1">Back to Scenario</button>
+        <button type="button" class="btn btn-primary btn-sm next-step" data-next="3">Proceed to Assessment</button>
+      </div>
+    </section>
+
+    <section class="lab-step p-4" id="step-3" data-step="3">
+      <h2 class="fw-semibold mb-4">Step 3 · Multiple-Choice Assessment (MCA)</h2>
+      <p class="text-secondary">Answer the following multiple-choice questions. Each item includes a hidden answer key with explanations so you can validate your selections without relying on external systems.</p>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">Question 1 · Sender Analysis</h3>
+        <p class="text-secondary mb-2">Which indicator most clearly proves the email did not originate from the legitimate HR domain?</p>
+        <ul class="text-secondary">
+          <li>A. The message references benefits enrollment.</li>
+          <li>B. The sender address is <strong>hr-updates@peakbeneflts.com</strong>.</li>
+          <li>C. The greeting uses Taylor’s first name.</li>
+          <li>D. The footer includes Alex Morgan’s signature.</li>
+        </ul>
+        <form class="mcq-form" data-answer="b">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q1" id="q1a" value="a">
+            <label class="form-check-label" for="q1a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q1" id="q1b" value="b">
+            <label class="form-check-label" for="q1b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q1" id="q1c" value="c">
+            <label class="form-check-label" for="q1c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="q1" id="q1d" value="d">
+            <label class="form-check-label" for="q1d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>B</strong> — the attacker swapped the second “i” for an “l,” indicating a typo-squatted domain.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">Question 2 · Urgency Tactics</h3>
+        <p class="text-secondary mb-2">What social-engineering technique is primarily used to rush the target into acting?</p>
+        <ul class="text-secondary">
+          <li>A. Scarcity of reward points.</li>
+          <li>B. Threat of legal action.</li>
+          <li>C. Imminent loss of benefits if action is not taken within 30 minutes.</li>
+          <li>D. Promise of a salary increase.</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q2" id="q2a" value="a">
+            <label class="form-check-label" for="q2a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q2" id="q2b" value="b">
+            <label class="form-check-label" for="q2b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q2" id="q2c" value="c">
+            <label class="form-check-label" for="q2c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="q2" id="q2d" value="d">
+            <label class="form-check-label" for="q2d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>C</strong> — the attacker fabricates a narrow deadline to bypass normal verification steps.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">Question 3 · Technical Artefact</h3>
+        <p class="text-secondary mb-2">The header excerpt shows <code>spf=fail</code>. What does this indicate?</p>
+        <ul class="text-secondary">
+          <li>A. The email contained malicious attachments.</li>
+          <li>B. The sending server was not authorised to send on behalf of the claimed domain.</li>
+          <li>C. The user’s mailbox is over quota.</li>
+          <li>D. The message was encrypted in transit.</li>
+        </ul>
+        <form class="mcq-form" data-answer="b">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q3" id="q3a" value="a">
+            <label class="form-check-label" for="q3a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q3" id="q3b" value="b">
+            <label class="form-check-label" for="q3b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q3" id="q3c" value="c">
+            <label class="form-check-label" for="q3c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="q3" id="q3d" value="d">
+            <label class="form-check-label" for="q3d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>B</strong> — the SPF failure confirms the infrastructure mismatch supporting the spoof.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">Question 4 · Clone Portal Behaviour</h3>
+        <p class="text-secondary mb-2">Why is entering MFA codes into the cloned portal especially dangerous?</p>
+        <ul class="text-secondary">
+          <li>A. The attacker can sell the codes to advertisers.</li>
+          <li>B. The codes are stored safely until the user confirms.</li>
+          <li>C. The attacker can replay the captured one-time password to the real service before it expires.</li>
+          <li>D. The codes disable the security update.</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q4" id="q4a" value="a">
+            <label class="form-check-label" for="q4a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q4" id="q4b" value="b">
+            <label class="form-check-label" for="q4b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q4" id="q4c" value="c">
+            <label class="form-check-label" for="q4c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="q4" id="q4d" value="d">
+            <label class="form-check-label" for="q4d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>C</strong> — relay attacks allow adversaries to defeat MFA if they capture the code in real time.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">Question 5 · Response Action</h3>
+        <p class="text-secondary mb-2">What is the most appropriate immediate action after identifying this phishing attempt?</p>
+        <ul class="text-secondary">
+          <li>A. Ignore the email and delete it without telling anyone.</li>
+          <li>B. Forward the email to colleagues so they can see the warning.</li>
+          <li>C. Report the phishing message to the security team and contact HR via a trusted link.</li>
+          <li>D. Reply to the sender requesting verification.</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q5" id="q5a" value="a">
+            <label class="form-check-label" for="q5a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q5" id="q5b" value="b">
+            <label class="form-check-label" for="q5b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q5" id="q5c" value="c">
+            <label class="form-check-label" for="q5c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="q5" id="q5d" value="d">
+            <label class="form-check-label" for="q5d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>C</strong> — reporting through official channels enables containment while avoiding attacker engagement.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">Question 6 · Flag Capture</h3>
+        <p class="text-secondary mb-2">After completing the analysis and response steps, record the lab completion flag below.</p>
+        <ul class="text-secondary">
+          <li>A. FLAG-PASSWORD-RESET</li>
+          <li>B. FLAG-MFA-ESCALATED</li>
+          <li>C. FLAG-CLONE-PROTECTED</li>
+          <li>D. FLAG-AWARENESS-LEVEL3</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q6" id="q6a" value="a">
+            <label class="form-check-label" for="q6a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q6" id="q6b" value="b">
+            <label class="form-check-label" for="q6b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="q6" id="q6c" value="c">
+            <label class="form-check-label" for="q6c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="q6" id="q6d" value="d">
+            <label class="form-check-label" for="q6d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-banner">Completion Flag: <strong>FLAG-CLONE-PROTECTED</strong></div>
+          <p class="text-secondary mt-3 mb-0">Log this flag in your training tracker to receive completion credit for Lab 1.</p>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4">
+        <h3 class="h5">Response Playbook Snapshot</h3>
+        <ol class="text-secondary mb-0">
+          <li class="mb-2">Preserve the original email, including headers, and submit it via the phishing-report button.</li>
+          <li class="mb-2">Reset any passwords or tokens that may have been exposed and watch for unauthorised logins.</li>
+          <li>Share lessons learned with your team during the next stand-up or awareness huddle.</li>
+        </ol>
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn btn-outline-secondary btn-sm prev-step" data-prev="2">Back to Visual Reference</button>
+        <a class="btn btn-success btn-sm" href="#modules">Review Lab Modules</a>
+      </div>
+    </section>
+
+    <section class="lab-mcq-standalone p-4" id="standalone-mcq">
+      <h2 class="fw-semibold mb-4">Standalone MCQ Review</h2>
+      <p class="text-secondary">Prefer to work through the questions outside the guided steps? Use this quick MCQ section to select answers and receive instant feedback without navigating the progress tracker.</p>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">MCQ 1 · Sender Analysis</h3>
+        <p class="text-secondary mb-2">Which indicator most clearly proves the email did not originate from the legitimate HR domain?</p>
+        <ul class="text-secondary">
+          <li>A. The message references benefits enrollment.</li>
+          <li>B. The sender address is <strong>hr-updates@peakbeneflts.com</strong>.</li>
+          <li>C. The greeting uses Taylor’s first name.</li>
+          <li>D. The footer includes Alex Morgan’s signature.</li>
+        </ul>
+        <form class="mcq-form" data-answer="b">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq1" id="sq1a" value="a">
+            <label class="form-check-label" for="sq1a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq1" id="sq1b" value="b">
+            <label class="form-check-label" for="sq1b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq1" id="sq1c" value="c">
+            <label class="form-check-label" for="sq1c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="sq1" id="sq1d" value="d">
+            <label class="form-check-label" for="sq1d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>B</strong> — the attacker swapped the second “i” for an “l,” indicating a typo-squatted domain.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">MCQ 2 · Urgency Tactics</h3>
+        <p class="text-secondary mb-2">What social-engineering technique is primarily used to rush the target into acting?</p>
+        <ul class="text-secondary">
+          <li>A. Scarcity of reward points.</li>
+          <li>B. Threat of legal action.</li>
+          <li>C. Imminent loss of benefits if action is not taken within 30 minutes.</li>
+          <li>D. Promise of a salary increase.</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq2" id="sq2a" value="a">
+            <label class="form-check-label" for="sq2a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq2" id="sq2b" value="b">
+            <label class="form-check-label" for="sq2b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq2" id="sq2c" value="c">
+            <label class="form-check-label" for="sq2c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="sq2" id="sq2d" value="d">
+            <label class="form-check-label" for="sq2d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>C</strong> — the attacker fabricates a narrow deadline to bypass normal verification steps.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">MCQ 3 · Technical Artefact</h3>
+        <p class="text-secondary mb-2">The header excerpt shows <code>spf=fail</code>. What does this indicate?</p>
+        <ul class="text-secondary">
+          <li>A. The email contained malicious attachments.</li>
+          <li>B. The sending server was not authorised to send on behalf of the claimed domain.</li>
+          <li>C. The user’s mailbox is over quota.</li>
+          <li>D. The message was encrypted in transit.</li>
+        </ul>
+        <form class="mcq-form" data-answer="b">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq3" id="sq3a" value="a">
+            <label class="form-check-label" for="sq3a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq3" id="sq3b" value="b">
+            <label class="form-check-label" for="sq3b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq3" id="sq3c" value="c">
+            <label class="form-check-label" for="sq3c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="sq3" id="sq3d" value="d">
+            <label class="form-check-label" for="sq3d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>B</strong> — the SPF failure confirms the infrastructure mismatch supporting the spoof.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">MCQ 4 · Clone Portal Behaviour</h3>
+        <p class="text-secondary mb-2">Why is entering MFA codes into the cloned portal especially dangerous?</p>
+        <ul class="text-secondary">
+          <li>A. The attacker can sell the codes to advertisers.</li>
+          <li>B. The codes are stored safely until the user confirms.</li>
+          <li>C. The attacker can replay the captured one-time password to the real service before it expires.</li>
+          <li>D. The codes disable the security update.</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq4" id="sq4a" value="a">
+            <label class="form-check-label" for="sq4a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq4" id="sq4b" value="b">
+            <label class="form-check-label" for="sq4b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq4" id="sq4c" value="c">
+            <label class="form-check-label" for="sq4c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="sq4" id="sq4d" value="d">
+            <label class="form-check-label" for="sq4d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>C</strong> — relay attacks allow adversaries to defeat MFA if they capture the code in real time.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4 mb-4">
+        <h3 class="h5">MCQ 5 · Response Action</h3>
+        <p class="text-secondary mb-2">What is the most appropriate immediate action after identifying this phishing attempt?</p>
+        <ul class="text-secondary">
+          <li>A. Ignore the email and delete it without telling anyone.</li>
+          <li>B. Forward the email to colleagues so they can see the warning.</li>
+          <li>C. Report the phishing message to the security team and contact HR via a trusted link.</li>
+          <li>D. Reply to the sender requesting verification.</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq5" id="sq5a" value="a">
+            <label class="form-check-label" for="sq5a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq5" id="sq5b" value="b">
+            <label class="form-check-label" for="sq5b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq5" id="sq5c" value="c">
+            <label class="form-check-label" for="sq5c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="sq5" id="sq5d" value="d">
+            <label class="form-check-label" for="sq5d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-pill mt-3">Correct: <strong>C</strong> — reporting through official channels enables containment while avoiding attacker engagement.</div>
+        </details>
+      </div>
+
+      <div class="knowledge-card p-4">
+        <h3 class="h5">MCQ 6 · Flag Capture</h3>
+        <p class="text-secondary mb-2">After completing the analysis and response steps, record the lab completion flag below.</p>
+        <ul class="text-secondary">
+          <li>A. FLAG-PASSWORD-RESET</li>
+          <li>B. FLAG-MFA-ESCALATED</li>
+          <li>C. FLAG-CLONE-PROTECTED</li>
+          <li>D. FLAG-AWARENESS-LEVEL3</li>
+        </ul>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq6" id="sq6a" value="a">
+            <label class="form-check-label" for="sq6a">A</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq6" id="sq6b" value="b">
+            <label class="form-check-label" for="sq6b">B</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sq6" id="sq6c" value="c">
+            <label class="form-check-label" for="sq6c">C</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="sq6" id="sq6d" value="d">
+            <label class="form-check-label" for="sq6d">D</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+        <details class="mt-3">
+          <summary>Reveal answer</summary>
+          <div class="flag-banner">Completion Flag: <strong>FLAG-CLONE-PROTECTED</strong></div>
+          <p class="text-secondary mt-3 mb-0">Log this flag in your training tracker to receive completion credit for Lab 1.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="lab-modules mt-5" id="modules">
+      <h2 class="h4 text-center mb-2">Detailed Lab Modules</h2>
+      <p class="text-secondary text-center mb-5">Each module mirrors the TryHackMe-style learning path with objectives, visuals, and core skills.</p>
+
+      <div class="module-card row g-0 align-items-stretch">
+        <div class="col-md-5">
+          <img src="https://images.unsplash.com/photo-1587613862884-4b8b0a19e8ab?auto=format&fit=crop&w=900&q=80" alt="Person reviewing phishing email" loading="lazy">
+        </div>
+        <div class="col-md-7">
+          <div class="module-body h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge text-bg-primary">Module 01</span>
+              <span class="text-secondary small">Est. time: 10 minutes</span>
+            </div>
+            <h3 class="h5">Investigate the Suspicious Email</h3>
+            <p class="text-secondary">Dissect the initial lure, compare sender identities, and document urgency tactics that signal manipulation.</p>
+            <ul class="text-secondary small mb-4">
+              <li class="mb-2">Identify typo-squatted domains and forged reply paths.</li>
+              <li class="mb-2">Correlate emotional triggers with the attacker’s objective.</li>
+              <li>Capture header artefacts such as SPF failures or redirect warnings.</li>
+            </ul>
+            <span class="badge rounded-pill text-bg-light text-secondary mt-auto">Skills: Email forensics · Header review · Threat awareness</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="module-card row g-0 align-items-stretch">
+        <div class="col-md-5 order-md-2">
+          <img src="https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=900&q=80" alt="Cloned login portal" loading="lazy">
+        </div>
+        <div class="col-md-7 order-md-1">
+          <div class="module-body h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge text-bg-primary">Module 02</span>
+              <span class="text-secondary small">Est. time: 15 minutes</span>
+            </div>
+            <h3 class="h5">Inspect the Cloned Portal</h3>
+            <p class="text-secondary">Walk through the fraudulent site, spot branding mismatches, and recognise how credentials are harvested.</p>
+            <ul class="text-secondary small mb-4">
+              <li class="mb-2">Compare the attacker’s domain and certificate details with the real portal.</li>
+              <li class="mb-2">Check page elements for missing assets or suspicious redirects.</li>
+              <li>Document what happens to email, password, and MFA inputs.</li>
+            </ul>
+            <span class="badge rounded-pill text-bg-light text-secondary mt-auto">Skills: Web cloning analysis · Credential defense · UX anomaly spotting</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="module-card row g-0 align-items-stretch mb-0">
+        <div class="col-md-5">
+          <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?auto=format&fit=crop&w=900&q=80" alt="Team planning incident response" loading="lazy">
+        </div>
+        <div class="col-md-7">
+          <div class="module-body h-100 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge text-bg-primary">Module 03</span>
+              <span class="text-secondary small">Est. time: 8 minutes</span>
+            </div>
+            <h3 class="h5">Respond &amp; Capture the Flag</h3>
+            <p class="text-secondary">Finalise the investigation, brief stakeholders, and record the completion flag for your learning log.</p>
+            <ul class="text-secondary small mb-4">
+              <li class="mb-2">Select remediation steps that align with company policy.</li>
+              <li class="mb-2">Consolidate evidence for incident reporting.</li>
+              <li>Share lessons learned with teammates to improve awareness.</li>
+            </ul>
+            <span class="badge rounded-pill text-bg-light text-secondary mt-auto">Skills: Incident reporting · Security coaching · Retention assessment</span>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="lab-step" data-step="2" aria-labelledby="stepTwoHeading" aria-hidden="true">
-      <div class="row g-4 align-items-stretch">
-        <div class="col-lg-7">
-          <div class="fake-login h-100">
-            <div class="d-flex justify-content-between align-items-start mb-3">
-              <div>
-                <h2 class="h5 mb-0" id="stepTwoHeading">Peak Benefits Portal</h2>
-                <small class="text-muted">https://hr-portal-peakbenefits.com.security-update.io/login</small>
-              </div>
-              <span class="badge bg-danger">Clone Detected</span>
-            </div>
-            <form>
-              <div class="mb-3">
-                <label for="inputEmail" class="form-label">Corporate Email</label>
-                <input type="email" class="form-control" id="inputEmail" placeholder="name@company.com">
-                <div class="form-text text-danger" id="emailWarning" hidden>⚠️ Auto-filled email captured for reuse.</div>
-              </div>
-              <div class="mb-3">
-                <label for="inputPassword" class="form-label">Network Password</label>
-                <div class="input-group">
-                  <input type="password" class="form-control" id="inputPassword" placeholder="••••••••">
-                  <button type="button" class="btn btn-outline-secondary" id="togglePassword">Show</button>
-                </div>
-                <div class="form-text text-danger" id="passwordWarning" hidden>⚠️ Password sent to remote server.</div>
-              </div>
-              <div class="mb-3">
-                <label for="inputToken" class="form-label">One-Time Token</label>
-                <input type="text" class="form-control" id="inputToken" placeholder="123456">
-                <div class="form-text text-danger" id="tokenWarning" hidden>⚠️ Attacker bypasses MFA by capturing token live.</div>
-              </div>
-              <button type="button" class="btn btn-primary w-100" id="submitClone">Sign In</button>
-              <p class="small text-muted mt-3 mb-0">Notice the untrusted domain, missing HTTPS lock icon, and mismatched fonts that differ from your legitimate HR portal.</p>
-            </form>
-          </div>
-        </div>
-        <div class="col-lg-5">
-          <div class="h-100 d-flex flex-column justify-content-between">
-            <div class="card shadow-sm mb-3">
-              <div class="card-body">
-                <h3 class="h6">Flag: Clone Portal Artifacts</h3>
-                <p class="text-muted small mb-3">Click the items you observe to log evidence.</p>
-                <div class="list-group flag-list" id="cloneFlags">
-                  <label class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Domain mismatch (security-update.io)</span>
-                    <input class="form-check-input" type="checkbox" value="domain">
-                  </label>
-                  <label class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Broken favicon / padlock</span>
-                    <input class="form-check-input" type="checkbox" value="favicon">
-                  </label>
-                  <label class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Generic greeting &amp; brand inconsistency</span>
-                    <input class="form-check-input" type="checkbox" value="greeting">
-                  </label>
-                  <label class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>Unsecured form posts credentials in plain text</span>
-                    <input class="form-check-input" type="checkbox" value="plaintext">
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <h3 class="h6">Captured Evidence</h3>
-                <ul class="small text-muted" id="evidenceLog">
-                  <li>No evidence logged yet.</li>
-                </ul>
-              </div>
-            </div>
-            <button class="btn btn-outline-primary mt-3 next-step align-self-end" data-target="3">Proceed to response plan</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="lab-step" data-step="3" aria-labelledby="stepThreeHeading" aria-hidden="true">
-      <div class="row g-4">
-        <div class="col-lg-7">
-          <div class="card shadow-sm">
-            <div class="card-body p-4">
-              <h2 class="h5 mb-3" id="stepThreeHeading">Knowledge Check</h2>
-              <p class="text-muted">Answer the questions below to reveal the final learning flag.</p>
-              <form id="quizForm" class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Why is the email sender suspicious?</label>
-                  <select class="form-select" name="sender" required>
-                    <option value="">Select an answer</option>
-                    <option value="domain">The domain uses a typo that swaps letters.</option>
-                    <option value="reply-to">The Reply-To points to HR.</option>
-                    <option value="bcc">The BCC field is empty.</option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">How does the clone bypass MFA?</label>
-                  <select class="form-select" name="mfa" required>
-                    <option value="">Select an answer</option>
-                    <option value="capture">It captures the one-time token and relays it.</option>
-                    <option value="disable">It disables MFA on the server.</option>
-                    <option value="vpn">It forces a VPN login first.</option>
-                  </select>
-                </div>
-                <div class="col-12">
-                  <label class="form-label">Best immediate response?</label>
-                  <select class="form-select" name="response" required>
-                    <option value="">Select an answer</option>
-                    <option value="report">Report the message and confirm via trusted channels.</option>
-                    <option value="ignore">Ignore the email completely.</option>
-                    <option value="reset">Reset your password using the provided link.</option>
-                  </select>
-                </div>
-                <div class="col-12 d-flex justify-content-between align-items-center mt-3">
-                  <button type="submit" class="btn btn-success">Submit Answers</button>
-                  <span class="badge bg-light text-success border border-success" id="finalFlag" hidden>FLAG-CLONE-PROTECTED</span>
-                </div>
-              </form>
-              <div class="quiz-result correct mt-3" id="quizSuccess">
-                ✅ Correct! The final flag is <strong>FLAG-CLONE-PROTECTED</strong>. Document it in your lab notes.
-              </div>
-              <div class="quiz-result incorrect mt-3" id="quizFailure">
-                ❌ Not quite. Review the clues in the email and clone portal, then try again.
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-5">
-          <div class="card shadow-sm mb-3">
-            <div class="card-body">
-              <h3 class="h6">Response Playbook</h3>
-              <ol class="small text-muted ps-3">
-                <li class="mb-2">Stop and document the suspicious email without interacting further.</li>
-                <li class="mb-2">Report the message to your security operations channel.</li>
-                <li>Change any credentials you shared and monitor for suspicious logins.</li>
-              </ol>
-            </div>
-          </div>
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <h3 class="h6">Lab Wrap-Up</h3>
-              <p class="small text-muted mb-3">Summarize what you learned before closing the exercise.</p>
-              <ul class="small text-muted mb-3">
-                <li>Clone portals copy brand assets but can’t match every detail.</li>
-                <li>MFA is only effective if the token stays with you.</li>
-                <li>Prompt reporting protects teammates from the same trap.</li>
-              </ul>
-              <div class="alert alert-info mb-0" role="status">
-                Save the flag above as proof of completion and share your notes with your training facilitator.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <footer class="text-center text-muted small pb-4">
-      <p class="mb-1">Practice safe credential handling &mdash; always validate the sender and destination URL.</p>
-      <p class="mb-0">Phishing Awareness Labs &copy; 2024</p>
+    <footer class="text-center small mt-5 pb-4">
+      <p class="mb-1">Practice safe credential handling — always validate the sender and destination URL.</p>
+      <p class="mb-0">Phishing Awareness Labs © 2024</p>
     </footer>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const clonePortalLink = document.getElementById('clonePortalLink');
-    const emailWarning = document.getElementById('emailWarning');
-    const passwordWarning = document.getElementById('passwordWarning');
-    const tokenWarning = document.getElementById('tokenWarning');
-    const togglePassword = document.getElementById('togglePassword');
-    const submitClone = document.getElementById('submitClone');
-    const evidenceLog = document.getElementById('evidenceLog');
-    const cloneFlags = document.getElementById('cloneFlags');
-    const quizForm = document.getElementById('quizForm');
-    const quizSuccess = document.getElementById('quizSuccess');
-    const quizFailure = document.getElementById('quizFailure');
-    const finalFlag = document.getElementById('finalFlag');
-    const labSteps = document.querySelectorAll('.lab-step');
-    const progressPills = document.querySelectorAll('.progress-pill');
-    const nextStepButtons = document.querySelectorAll('.next-step');
+    (function () {
+      var steps = Array.from(document.querySelectorAll('.lab-step'));
+      var trackerSteps = Array.from(document.querySelectorAll('.tracker-step'));
 
-    const alertDuration = 3500;
-    let activeAlert;
-
-    const setActiveStep = (step) => {
-      labSteps.forEach((section) => {
-        const isActive = section.dataset.step === step;
-        section.classList.toggle('active', isActive);
-        section.setAttribute('aria-hidden', (!isActive).toString());
-      });
-
-      progressPills.forEach((pill) => {
-        const isActive = pill.dataset.step === step;
-        pill.classList.toggle('active', isActive);
-        pill.setAttribute('aria-selected', isActive.toString());
-      });
-    };
-
-    progressPills.forEach((pill) => {
-      pill.addEventListener('click', () => setActiveStep(pill.dataset.step));
-    });
-
-    nextStepButtons.forEach((button) => {
-      button.addEventListener('click', () => setActiveStep(button.dataset.target));
-    });
-
-    clonePortalLink.addEventListener('click', (event) => {
-      event.preventDefault();
-      document.getElementById('inputEmail').focus();
-      emailWarning.hidden = false;
-      passwordWarning.hidden = false;
-      tokenWarning.hidden = false;
-    });
-
-    togglePassword.addEventListener('click', () => {
-      const type = togglePassword.dataset.visible === 'true' ? 'password' : 'text';
-      document.getElementById('inputPassword').setAttribute('type', type);
-      togglePassword.dataset.visible = (type === 'text').toString();
-      togglePassword.textContent = type === 'text' ? 'Hide' : 'Show';
-    });
-
-    submitClone.addEventListener('click', () => {
-      if (activeAlert) {
-        activeAlert.remove();
+      function showStep(stepNumber) {
+        var target = stepNumber.toString();
+        steps.forEach(function (step) {
+          var isActive = step.dataset.step === target;
+          step.classList.toggle('active', isActive);
+          step.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+        });
+        trackerSteps.forEach(function (item) {
+          var itemStep = item.dataset.step;
+          item.classList.toggle('active', itemStep === target);
+          item.setAttribute('aria-current', itemStep === target ? 'step' : 'false');
+          if (Number(itemStep) < Number(target)) {
+            item.classList.add('completed');
+          } else {
+            item.classList.remove('completed');
+          }
+        });
+        var activeStep = steps.find(function (step) {
+          return step.dataset.step === target;
+        });
+        if (activeStep) {
+          activeStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
 
-      const alert = document.createElement('div');
-      alert.className = 'alert alert-danger mt-3';
-      alert.textContent = 'Credentials exfiltrated! The clone immediately sends your details to the attacker.';
-      submitClone.insertAdjacentElement('afterend', alert);
-      submitClone.disabled = true;
-      activeAlert = alert;
-
-      setTimeout(() => {
-        alert.remove();
-        submitClone.disabled = false;
-        activeAlert = null;
-      }, alertDuration);
-    });
-
-    cloneFlags.addEventListener('change', () => {
-      const checked = cloneFlags.querySelectorAll('input:checked');
-      evidenceLog.innerHTML = '';
-
-      if (!checked.length) {
-        evidenceLog.innerHTML = '<li>No evidence logged yet.</li>';
-        return;
-      }
-
-      checked.forEach((input) => {
-        const item = document.createElement('li');
-        item.textContent = input.parentElement.querySelector('span').textContent;
-        evidenceLog.appendChild(item);
+      document.querySelectorAll('.next-step').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var next = button.dataset.next;
+          if (next) {
+            showStep(next);
+          }
+        });
       });
-    });
 
-    quizForm.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const formData = new FormData(quizForm);
-      const answers = {
-        sender: 'domain',
-        mfa: 'capture',
-        response: 'report'
-      };
+      document.querySelectorAll('.prev-step').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var prev = button.dataset.prev;
+          if (prev) {
+            showStep(prev);
+          }
+        });
+      });
 
-      const correct = Object.entries(answers).every(([key, value]) => formData.get(key) === value);
+      document.querySelectorAll('.jump-step').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var target = button.dataset.target;
+          if (target) {
+            showStep(target);
+          }
+        });
+      });
 
-      quizSuccess.style.display = 'none';
-      quizFailure.style.display = 'none';
+      trackerSteps.forEach(function (item) {
+        item.addEventListener('click', function () {
+          showStep(item.dataset.step);
+        });
+      });
 
-      if (correct) {
-        quizSuccess.style.display = 'block';
-        finalFlag.hidden = false;
-        setActiveStep('3');
-      } else {
-        quizFailure.style.display = 'block';
-        finalFlag.hidden = true;
-      }
-    });
+      document.querySelectorAll('.mcq-form').forEach(function (form) {
+        var button = form.querySelector('.check-answer');
+        var feedback = form.querySelector('.mcq-feedback');
+        var correct = form.dataset.answer;
+        button.addEventListener('click', function () {
+          var selected = form.querySelector('input[type="radio"]:checked');
+          if (!selected) {
+            feedback.textContent = 'Select an option to check your answer.';
+            feedback.classList.remove('correct', 'incorrect');
+            return;
+          }
+          if (selected.value === correct) {
+            feedback.textContent = 'Correct answer!';
+            feedback.classList.add('correct');
+            feedback.classList.remove('incorrect');
+          } else {
+            feedback.textContent = 'That is not correct. Review the scenario and try again.';
+            feedback.classList.add('incorrect');
+            feedback.classList.remove('correct');
+          }
+        });
+      });
+
+      showStep('1');
+    })();
   </script>
 </body>
 </html>
