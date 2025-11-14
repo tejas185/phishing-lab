@@ -185,7 +185,7 @@
     .step-nav button {
       min-width: 220px;
     }
-    .assessment-card, .module-card, .review-card {
+    .assessment-card, .review-card {
       border: 1px solid #e2e8f0;
       border-radius: 1rem;
       background: #fff;
@@ -193,8 +193,27 @@
       box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.05);
       margin-bottom: 1.5rem;
     }
-    .module-card {
+    .lab-modules .module-card {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .lab-modules .module-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .lab-modules .module-body {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
       background: #f8fafc;
+    }
+    .lab-modules .module-body .badge {
+      font-weight: 600;
     }
     .mcq-feedback {
       min-height: 1.25rem;
@@ -215,12 +234,12 @@
     <section class="lab-hero text-white mb-4">
       <div class="row align-items-center g-4">
         <div class="col-lg-7">
-          <h1 class="display-6 fw-bold">Lab 6 – Business Email Compromise (BEC)</h1>
-          <p class="lead mb-3">
+          <h1 class="display-6 fw-bold text-dark">Lab 6 – Business Email Compromise (BEC)</h1>
+          <p class="lead mb-3 text-dark">
             Navigate a finance team escalation where an attacker spoofs your CFO, sends an urgent
             vendor payment request, and attempts to bypass callback controls.
           </p>
-          <p class="mb-0">
+          <p class="mb-0 text-dark">
             This dynamic walkthrough layers interactive event timelines, verification tooling, and
             action planning so you can rehearse the BEC response loop end-to-end.
           </p>
@@ -579,43 +598,164 @@
       </div>
     </article>
 
-    <section class="mt-5">
-      <h2 class="h4 mb-3">TryHackMe-style Module Breakdown</h2>
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="module-card h-100">
-            <h3 class="h6">Module 1 · Spot the Spoof</h3>
-            <p class="text-secondary small">Dissect the inbound email, Teams chat, and invoice artefacts to prove impersonation.</p>
-            <ul class="small mb-0">
-              <li>Header analysis</li>
-              <li>Timeline reconstruction</li>
-              <li>Red flag cataloguing</li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="module-card h-100">
-            <h3 class="h6">Module 2 · Control the Cash</h3>
-            <p class="text-secondary small">Walk through financial control checkpoints to stop fraudulent disbursements.</p>
-            <ul class="small mb-0">
-              <li>Ledger verification</li>
-              <li>Callback enforcement</li>
-              <li>Residual risk tracking</li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="module-card h-100">
-            <h3 class="h6">Module 3 · Communicate &amp; Contain</h3>
-            <p class="text-secondary small">Craft stakeholder updates and finalize the BEC incident response deliverables.</p>
-            <ul class="small mb-0">
-              <li>Escalation briefing</li>
-              <li>Executive messaging</li>
-              <li>Flag capture</li>
-            </ul>
-          </div>
-        </div>
+    <section class="lab-modules mt-5" id="modules">
+      <h2 class="h4 text-center mb-2">Detailed Lab Modules</h2>
+      <p class="text-secondary text-center mb-5">Mirror the Lab 1 structure with scenario imagery, objectives, and skills to guide your Business Email Compromise investigation.</p>
+
+     <div class="module-card row g-0 align-items-stretch">
+  <div class="col-md-5">
+    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80" 
+         alt="Security analyst reviewing an executive email" loading="lazy">
+  </div>
+
+  <div class="col-md-7">
+    <div class="module-body">
+
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge text-bg-primary">Module 01</span>
+        <span class="text-secondary small">Est. time: 12 minutes</span>
       </div>
+
+      <h3 class="h5">Reconstruct the Executive Spoof</h3>
+
+      <p class="text-secondary">
+        This module walks you through the forensic reconstruction of a Business Email 
+        Compromise (BEC) attempt aimed at impersonating the CFO. You will combine clues  
+        from inbound emails, Teams messages, timestamps, and metadata to rebuild the 
+        attacker’s sequence of actions. The goal is to reveal how the spoof was crafted, 
+        how urgency was introduced, and how the attacker attempted to bypass financial 
+        verification controls.
+      </p>
+
+      <ul class="text-secondary small mb-4">
+        <li class="mb-2">
+          Correlate events across email and Teams to identify pressure tactics such as 
+          fabricated emergencies, payment deadlines, or executive-level intimidation 
+          commonly used in BEC attacks.
+        </li>
+
+        <li class="mb-2">
+          Document key indicators of compromise — spoofed domains, mismatched “Reply-To” 
+          addresses, header anomalies, device fingerprint inconsistencies, and sudden 
+          channel pivots designed to avoid scrutiny.
+        </li>
+
+        <li>
+          Capture every artefact inside the verification checklist, including metadata, 
+          sending IPs, timestamps, altered display names, and attacker-controlled URLs, 
+          ensuring a complete evidence set for SOC and finance escalation workflows.
+        </li>
+      </ul>
+
+      <span class="badge rounded-pill text-bg-light text-secondary mt-auto">
+        Skills: Header analysis · Timeline reconstruction · Threat detection
+      </span>
+
+    </div>
+  </div>
+</div>
+
+
+      <div class="module-card row g-0 align-items-stretch">
+  <div class="col-md-5 order-md-2">
+    <img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=900&q=80" 
+         alt="Finance team monitoring treasury controls" loading="lazy">
+  </div>
+
+  <div class="col-md-7 order-md-1">
+    <div class="module-body">
+
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge text-bg-primary">Module 02</span>
+        <span class="text-secondary small">Est. time: 15 minutes</span>
+      </div>
+
+      <h3 class="h5">Enforce Financial Controls</h3>
+
+      <p class="text-secondary">
+        This module demonstrates how strong financial governance prevents a Business Email 
+        Compromise attack from escalating into a successful fraudulent transfer. You will 
+        step through treasury safeguards, vendor validation workflows, and callback 
+        requirements that must be followed before approving any high-risk payment request.
+      </p>
+
+      <ul class="text-secondary small mb-4">
+        <li class="mb-2">
+          Complete the vendor verification ledger by validating bank details, historical 
+          payment patterns, and authorized approvers, then adjust the residual risk rating 
+          based on inconsistencies.
+        </li>
+
+        <li class="mb-2">
+          Simulate treasury freezes, escalation triggers, and approval gates designed to 
+          halt fraudulent pay-outs—especially when requests originate from spoofed executive 
+          identities or unfamiliar accounts.
+        </li>
+
+        <li>
+          Map each artefact from the verification workbench (headers, timestamps, account 
+          changes, callback logs) to a specific financial control outcome, reinforcing 
+          why multi-layered checks are mandatory in BEC defence.
+        </li>
+      </ul>
+
+      <span class="badge rounded-pill text-bg-light text-secondary mt-auto">
+        Skills: Financial controls · Verification workflow · Risk communication
+      </span>
+    </div>
+  </div>
+</div>
+
+
+      <div class="module-card row g-0 align-items-stretch mb-0">
+  <div class="col-md-5">
+    <img src="https://images.unsplash.com/photo-1485217988980-11786ced9454?auto=format&fit=crop&w=900&q=80" 
+         alt="Team coordinating business email compromise response" loading="lazy">
+  </div>
+
+  <div class="col-md-7">
+    <div class="module-body">
+
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge text-bg-primary">Module 03</span>
+        <span class="text-secondary small">Est. time: 9 minutes</span>
+      </div>
+
+      <h3 class="h5">Coordinate Response &amp; Messaging</h3>
+
+      <p class="text-secondary">
+        In this final module, you will consolidate your findings, communicate with the right 
+        stakeholders, and verify that the BEC attempt has been fully contained. Effective 
+        messaging ensures executives, finance, SOC, and external partners all receive clear, 
+        actionable updates without creating confusion or panic.
+      </p>
+
+      <ul class="text-secondary small mb-4">
+        <li class="mb-2">
+          Craft targeted communication updates for executives, finance teams, SOC analysts, 
+          vendors, and legal/compliance partners using concise, role-specific summaries.
+        </li>
+
+        <li class="mb-2">
+          Complete the response playbook by confirming containment actions—including 
+          account resets, rule removal, treasury freezes, and email blocking—are finalized 
+          and verified.
+        </li>
+
+        <li>
+          Record the lab flag, attach artefacts, and capture lessons learned for the 
+          awareness backlog, enabling continuous improvement across future BEC exercises.
+        </li>
+      </ul>
+
+      <span class="badge rounded-pill text-bg-light text-secondary mt-auto">
+        Skills: Stakeholder coordination · Incident response · Knowledge capture
+      </span>
+
+    </div>
+  </div>
+</div>
+
     </section>
 
     <section class="mt-5">
