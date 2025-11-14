@@ -721,53 +721,114 @@
       <h2 id="modules-title" class="h4 text-center mb-4">TryHackMe-style Module Breakdown</h2>
       <p class="text-secondary text-center mb-5">Use these modules to reinforce the lab topics. Each includes visuals, guided reading, and quick wins.</p>
 
-      <div class="module-card row g-0 align-items-stretch mb-4">
-        <div class="col-md-5">
-          <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" alt="Professional reviewing social media profile" loading="lazy">
-        </div>
-        <div class="col-md-7 p-4">
-          <span class="badge bg-success-subtle text-success mb-2">Module 1</span>
-          <h3 class="h5">Assessing Social Profiles</h3>
-          <p class="text-secondary">Learn how to validate connection requests, spot synthetic personas, and confirm employer domains before engaging.</p>
-          <ul class="small text-secondary mb-0">
-            <li>Reverse-image search best practices.</li>
-            <li>Checklist for profile authenticity.</li>
-            <li>Safe escalation routes.</li>
-          </ul>
-        </div>
-      </div>
+     <div class="module-card row g-0 align-items-stretch mb-4">
+  <div class="col-md-5">
+    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" 
+         alt="Professional reviewing social media profile" loading="lazy">
+  </div>
+  <div class="col-md-7 p-4">
+    <span class="badge bg-success-subtle text-success mb-2">Module 1</span>
+
+    <h3 class="h5">Assessing Social Profiles</h3>
+
+    <p class="text-secondary">
+      This module focuses on evaluating social media and professional networking profiles 
+      before accepting connection requests or engaging in conversation. You will learn how 
+      attackers build synthetic personas, reuse stolen images, and spoof employer details 
+      to gain trust and deliver phishing links or malicious attachments.
+    </p>
+
+    <ul class="small text-secondary mb-0">
+      <li>
+        Apply reverse-image search best practices to detect reused profile pictures, stock 
+        images, or identities copied from real people.
+      </li>
+      <li>
+        Use a structured authenticity checklist—profile history, mutual connections, posting 
+        patterns, and domain consistency—to validate whether a persona is genuine.
+      </li>
+      <li>
+        Follow safe escalation routes when in doubt, including verifying identities via 
+        corporate channels or informing security teams about suspicious outreach.
+      </li>
+    </ul>
+  </div>
+</div>
+
 
       <div class="module-card row g-0 align-items-stretch mb-4">
-        <div class="col-md-5 order-md-2">
-          <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=900&q=80" alt="Person using messaging app on phone" loading="lazy">
-        </div>
-        <div class="col-md-7 p-4 order-md-1">
-          <span class="badge bg-success-subtle text-success mb-2">Module 2</span>
-          <h3 class="h5">Secure Messaging Hygiene</h3>
-          <p class="text-secondary">Follow structured playbooks for WhatsApp, Signal, and Teams to keep corporate conversations protected from phishers.</p>
-          <ul class="small text-secondary mb-0">
-            <li>Out-of-band verification flows.</li>
-            <li>Reporting templates for social platforms.</li>
-            <li>Blocking and logging procedures.</li>
-          </ul>
-        </div>
-      </div>
+  <div class="col-md-5 order-md-2">
+    <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=900&q=80" 
+         alt="Person using messaging app on phone" loading="lazy">
+  </div>
+
+  <div class="col-md-7 p-4 order-md-1">
+    <span class="badge bg-success-subtle text-success mb-2">Module 2</span>
+
+    <h3 class="h5">Secure Messaging Hygiene</h3>
+
+    <p class="text-secondary">
+      This module covers best practices for staying safe on corporate messaging apps such 
+      as WhatsApp, Signal, Slack, and Microsoft Teams. You will learn how attackers insert 
+      malicious links, impersonate colleagues, and exploit fast-paced chat environments to 
+      socially engineer employees. The focus is on applying structured verification and 
+      documentation workflows to keep conversations secure.
+    </p>
+
+    <ul class="small text-secondary mb-0">
+      <li>
+        Use out-of-band verification flows to confirm unexpected requests—such as payment 
+        approvals, document sign-offs, or link shares—via known corporate numbers or internal 
+        communication tools.
+      </li>
+      <li>
+        Follow predefined reporting templates to escalate suspicious messages to platform 
+        abuse teams or internal security operations with the right artefacts attached.
+      </li>
+      <li>
+        Apply safe blocking and logging procedures to record sender details, capture screenshots, 
+        and file chat transcripts for SOC review and audit compliance.
+      </li>
+    </ul>
+  </div>
+</div>
+
 
       <div class="module-card row g-0 align-items-stretch">
-        <div class="col-md-5">
-          <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=900&q=80" alt="Team analyzing threat intelligence" loading="lazy">
-        </div>
-        <div class="col-md-7 p-4">
-          <span class="badge bg-success-subtle text-success mb-2">Module 3</span>
-          <h3 class="h5">Threat Intel Correlation</h3>
-          <p class="text-secondary">Correlate phone numbers, domains, and handles across incidents to map coordinated social media phishing campaigns.</p>
-          <ul class="small text-secondary mb-0">
-            <li>Pivoting across chat logs and email headers.</li>
-            <li>Building repeatable enrichment workflows.</li>
-            <li>Sharing intel with peers responsibly.</li>
-          </ul>
-        </div>
-      </div>
+  <div class="col-md-5">
+    <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=900&q=80" 
+         alt="Team analyzing threat intelligence" loading="lazy">
+  </div>
+
+  <div class="col-md-7 p-4">
+    <span class="badge bg-success-subtle text-success mb-2">Module 3</span>
+
+    <h3 class="h5">Threat Intel Correlation</h3>
+
+    <p class="text-secondary">
+      This module teaches you how to connect the dots across multiple incidents by correlating 
+      attacker-controlled assets such as phone numbers, domains, usernames, and social media 
+      handles. By tracing these shared indicators, you can identify coordinated phishing 
+      campaigns and recognize attacker infrastructure that repeatedly targets your organization.
+    </p>
+
+    <ul class="small text-secondary mb-0">
+      <li>
+        Pivot between chat logs, email headers, profile links, and metadata to uncover reused 
+        artefacts and establish relationships between seemingly separate events.
+      </li>
+      <li>
+        Build repeatable enrichment workflows using threat intelligence sources—passive DNS, 
+        OSINT platforms, breach data, and reputation feeds—to validate suspicious identities.
+      </li>
+      <li>
+        Share intelligence responsibly with SOC teams, trusted peers, and information-sharing 
+        groups while maintaining compliance with data sensitivity and privacy guidelines.
+      </li>
+    </ul>
+  </div>
+</div>
+
     </section>
 
   </div>
