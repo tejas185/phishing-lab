@@ -798,12 +798,13 @@ X-LinkScan: flagged clone portal redirect
               <span class="badge text-bg-primary">Module 02</span>
               <span class="text-secondary small">Est. time: 15 minutes</span>
             </div>
-            <h3 class="h5">Inspect the Cloned Portal</h3>
-            <p class="text-secondary">Walk through the fraudulent site, spot branding mismatches, and recognise how credentials are harvested.</p>
+            <h3 class="h5"> Technical and Visual Inspection</h3>
+            <p class="text-secondary">Next, the lab shifts focus to the cloned portal itself. This section trains the user to spot both high-level visual cues and underlying technical failures that expose the fraud:</p>
             <ul class="text-secondary small mb-4">
-              <li class="mb-2">Compare the attacker’s domain and certificate details with the real portal.</li>
-              <li class="mb-2">Check page elements for missing assets or suspicious redirects.</li>
-              <li>Document what happens to email, password, and MFA inputs.</li>
+              <li class="mb-2">Domain & Certificate Discrepancies: The mock portal uses a suspicious, unbranded URL (security-update.io) and lacks a trusted SSL certificate, a tell-tale sign of a quick-setup phishing kit.</li>
+              <li class="mb-2">Branding Inconsistencies: Outdated logos, mismatched color palettes, and irrelevant copyright years signal that the site is a hastily assembled replica, not the legitimate corporate asset.</li>
+              <li>Credential Harvesting Mechanism: Crucially, the lab highlights that any submitted credentials are sent unencrypted over plain HTTP to a collection API, and that the portal dangerously asks for a Multi-Factor Authentication (MFA) code on the same page. This prepares the participant for the concept of MFA Relay Attacks, where an attacker captures and immediately replays the one-time code to bypass security.</li>
+              <li class="mb-2">Email Header Forensics: It also includes a technical detail from the email header, showing spf=fail, which is a definitive indicator that the sending server was not authorized to send mail on behalf of the claimed domain, thus confirming the email spoofing.</li>
             </ul>
             <span class="badge rounded-pill text-bg-light text-secondary mt-auto">Skills: Web cloning analysis · Credential defense · UX anomaly spotting</span>
           </div>
