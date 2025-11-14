@@ -1,1 +1,890 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lab 5 – Social Media &amp; Messaging Phishing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f5f7fb;
+      color: #0f172a;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .lab-container {
+      max-width: 1100px;
+    }
+    .lab-hero {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(34, 211, 238, 0.2));
+      border-radius: 1.25rem;
+      padding: 2.5rem;
+      box-shadow: 0 1.5rem 3rem rgba(14, 116, 144, 0.12);
+    }
+    .lab-step {
+      background: #ffffff;
+      border-radius: 1rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      margin-bottom: 2.5rem;
+      display: none;
+    }
+    .lab-step.active {
+      display: block;
+    }
+    .progress-tracker {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0;
+      flex-wrap: wrap;
+    }
+    .progress-tracker .tracker-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      border: 1px solid #d1fae5;
+      background: #ecfdf5;
+      color: #047857;
+      font-weight: 600;
+      box-shadow: 0 0.75rem 1.5rem rgba(16, 185, 129, 0.12);
+      transition: all 0.2s ease;
+    }
+    .tracker-step.active {
+      background: #10b981;
+      color: #fff;
+      border-color: #10b981;
+      box-shadow: 0 0.75rem 1.75rem rgba(16, 185, 129, 0.35);
+    }
+    .tracker-step.completed {
+      background: rgba(16, 185, 129, 0.12);
+      color: #047857;
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .step-nav button {
+      min-width: 220px;
+    }
+    .dm-thread {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+    }
+    .dm-thread .message {
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .message.inbound {
+      background: #ecfeff;
+      border: 1px solid #bae6fd;
+    }
+    .message.outbound {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    .indicator-card, .verification-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      background: #f8fafc;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+    }
+    .indicator-status, .verification-status {
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .channel-tabs {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .channel-tab {
+      border-radius: 999px;
+      border: 1px solid #a7f3d0;
+      background: #ecfdf5;
+      color: #047857;
+      font-weight: 600;
+      padding: 0.5rem 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .channel-tab.active {
+      background: #10b981;
+      border-color: #059669;
+      color: #fff;
+      box-shadow: 0 0.5rem 1rem rgba(16, 185, 129, 0.25);
+    }
+    .channel-tab:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.45);
+    }
+    .channel-panel {
+      display: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.9rem;
+      padding: 1.5rem;
+      background: #fff;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+    }
+    .channel-panel.active {
+      display: block;
+    }
+    .channel-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .channel-status span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      background: #d1fae5;
+      color: #047857;
+      font-size: 0.85rem;
+    }
+    .mcq-form {
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: #f8fafc;
+    }
+    .mcq-form .form-check {
+      margin-bottom: 0.5rem;
+    }
+    .mcq-feedback {
+      min-height: 1.25rem;
+      font-weight: 600;
+    }
+    .flag-banner {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #0f172a;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+    }
+    .lab-modules {
+      background: #fff;
+      border-radius: 1.25rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      padding: 3rem;
+      margin-top: 3rem;
+    }
+    .module-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      background: #f8fafc;
+    }
+    .module-card img {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+    .module-card:last-of-type {
+      margin-bottom: 0;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .standalone-review {
+      margin-top: 4rem;
+    }
+    .standalone-review .review-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      margin-bottom: 1.5rem;
+    }
+    .knowledge-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5 lab-container">
+    <header class="lab-hero mb-4 text-white">
+      <p class="badge bg-light text-dark fw-semibold">Lab 5 · Social Media &amp; IM</p>
+      <h1 class="mb-3 text-dark">Phishing via Social Media &amp; Messaging Apps</h1>
+      <p class="lead text-dark">Investigate a multi-platform lure that starts with a LinkedIn pitch, pivots to WhatsApp, and
+        delivers a credential-harvesting payment portal. Track the red flags and assemble a clean response
+        without any external tools.</p>
+      <div class="d-flex flex-wrap gap-3 mt-4">
+        <div>
+          <span class="badge bg-white text-success me-2">Profile triage</span>
+          <span class="badge bg-white text-success">Chat safety</span>
+        </div>
+        <div>
+          <span class="badge bg-white text-success me-2">Link previewing</span>
+          <span class="badge bg-white text-success">Flag capture</span>
+        </div>
+      </div>
+    </header>
 
+    <nav class="progress-tracker" aria-label="Progress through lab steps">
+      <div class="tracker-step active" data-step="1">1 · Scenario Brief</div>
+      <div class="tracker-step" data-step="2">2 · Artefact Explorer</div>
+      <div class="tracker-step" data-step="3">3 · Assessment</div>
+    </nav>
+
+    <article class="lab-step active" id="step-1" aria-labelledby="step1-title">
+      <div class="p-4 p-md-5">
+        <h2 id="step1-title" class="fw-semibold mb-3">Step 1 · Review the social engineering thread</h2>
+        <p class="text-secondary">A finance analyst received a cold LinkedIn message about a “strategic partnership” that quickly
+          escalated to WhatsApp. Use the message timeline to mark every suspicious cue before you move on to the
+          artefact explorer.</p>
+
+        <div class="row g-4 align-items-start mt-3">
+          <div class="col-lg-6">
+            <section class="dm-thread" aria-labelledby="thread-title">
+              <h3 id="thread-title" class="h5 mb-3">Conversation timeline</h3>
+              <div class="message inbound">
+                <p class="small text-uppercase text-secondary mb-1">LinkedIn · 09:05</p>
+                <p class="mb-1"><strong>Eva Zhao</strong> · “Partnership Strategist”</p>
+                <p class="mb-0">Hi! We loved your webinar. Could you help us process an urgent sponsorship payment today?</p>
+              </div>
+              <div class="message outbound">
+                <p class="small text-uppercase text-secondary mb-1">You · 09:07</p>
+                <p class="mb-0">Hi Eva, can you send details to our shared inbox?</p>
+              </div>
+              <div class="message inbound">
+                <p class="small text-uppercase text-secondary mb-1">LinkedIn · 09:08</p>
+                <p class="mb-1"><strong>Eva Zhao</strong></p>
+                <p class="mb-0">I’m travelling so I can’t email. WhatsApp me at <strong>+44&nbsp;7520&nbsp;555910</strong> and I’ll share the invoice.</p>
+              </div>
+              <div class="message inbound">
+                <p class="small text-uppercase text-secondary mb-1">WhatsApp · 09:10</p>
+                <p class="mb-0"><strong>Eva Zhao</strong> sent a shortened link: <a href="#" class="link-primary">https://paymy.link/1nvo</a></p>
+              </div>
+              <div class="message inbound">
+                <p class="small text-uppercase text-secondary mb-1">WhatsApp · 09:12</p>
+                <p class="mb-0">Need this cleared in <strong>20 minutes</strong> so our keynote isn’t cancelled. The CFO is depending on you!</p>
+              </div>
+            </section>
+          </div>
+          <div class="col-lg-6">
+            <aside class="indicator-card" aria-labelledby="indicator-title">
+              <h3 id="indicator-title" class="h5 mb-3">Flag the suspicious indicators</h3>
+              <p class="text-secondary small mb-3">Tick each clue you confirm. Status updates as you mark them.</p>
+              <div class="form-check">
+                <input class="form-check-input clue-check" type="checkbox" value="profile" id="clue-profile">
+                <label class="form-check-label" for="clue-profile">Profile lists no shared connections or history.</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input clue-check" type="checkbox" value="channel" id="clue-channel">
+                <label class="form-check-label" for="clue-channel">Requester pushes conversation off-platform immediately.</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input clue-check" type="checkbox" value="link" id="clue-link">
+                <label class="form-check-label" for="clue-link">Shortened payment link hides destination domain.</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input clue-check" type="checkbox" value="urgency" id="clue-urgency">
+                <label class="form-check-label" for="clue-urgency">Aggressive 20-minute deadline invokes executive pressure.</label>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input clue-check" type="checkbox" value="phone" id="clue-phone">
+                <label class="form-check-label" for="clue-phone">Phone number registered to a different country code.</label>
+              </div>
+              <div class="indicator-status" id="clue-status" aria-live="polite">0 of 5 indicators logged.</div>
+            </aside>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <span></span>
+          <button type="button" class="btn btn-primary" data-nav="next">Open artefact explorer</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="lab-step" id="step-2" aria-labelledby="step2-title">
+      <div class="p-4 p-md-5">
+        <h2 id="step2-title" class="fw-semibold mb-3">Step 2 · Examine supporting artefacts</h2>
+        <p class="text-secondary">Toggle through each artefact to see what investigators recovered from the social profiles and
+          link previews. Use the verification checklist to mark your containment actions.</p>
+
+        <div class="channel-tabs" role="tablist">
+          <button type="button" id="profile-tab" class="channel-tab active" data-target="profile" role="tab"
+            aria-controls="channel-profile" aria-selected="true">LinkedIn Profile</button>
+          <button type="button" id="preview-tab" class="channel-tab" data-target="preview" role="tab"
+            aria-controls="channel-preview" aria-selected="false">Link Preview</button>
+          <button type="button" id="history-tab" class="channel-tab" data-target="history" role="tab"
+            aria-controls="channel-history" aria-selected="false">Reporting History</button>
+        </div>
+
+        <section id="channel-profile" class="channel-panel active" role="tabpanel" aria-labelledby="profile-tab">
+          <div class="channel-status mb-3"><span>1</span>Profile photo reverse search shows stock imagery usage.</div>
+          <ul class="text-secondary mb-3">
+            <li>Joined platform <strong>2 weeks ago</strong>, only 12 connections.</li>
+            <li>Experience section copies text from a known vendor profile.</li>
+            <li>Recommendations panel is empty; no company domain listed.</li>
+          </ul>
+          <details>
+            <summary>View copied experience snippet</summary>
+            <p class="mt-3 small mb-0">“Led Fortune 100 sponsorship strategy across APAC” (identical to an unrelated executive’s bio).</p>
+          </details>
+        </section>
+
+        <section id="channel-preview" class="channel-panel" role="tabpanel" aria-labelledby="preview-tab">
+          <div class="channel-status mb-3"><span>2</span>Shortened URL expands to <code>https://pay-auth.securepromo.app/login</code>.</div>
+          <ul class="text-secondary mb-3">
+            <li>Domain registered <strong>yesterday</strong> via privacy-protected registrar.</li>
+            <li>Certificate issued by free tier CA, common in phishing kits.</li>
+            <li>Landing page requests Office 365 credentials and OTP.</li>
+          </ul>
+          <details>
+            <summary>Show HTML capture</summary>
+            <pre class="bg-light border rounded p-3 mt-3 small">&lt;form action="https://api.securepromo.app/collect" method="post"&gt;
+  &lt;input name="email" placeholder="Work email"&gt;
+  &lt;input name="password" type="password" placeholder="Password"&gt;
+  &lt;input name="otp" placeholder="Authenticator code"&gt;
+&lt;/form&gt;</pre>
+          </details>
+        </section>
+
+        <section id="channel-history" class="channel-panel" role="tabpanel" aria-labelledby="history-tab">
+          <div class="channel-status mb-3"><span>3</span>Threat intel feed links number to prior gift-card scams.</div>
+          <ul class="text-secondary mb-3">
+            <li>WhatsApp reports from <strong>4 organisations</strong> over the last month.</li>
+            <li>LinkedIn trust &amp; safety flagged the account for mass outreach.</li>
+            <li>SMS gateway logs show same number delivering credential phish kits.</li>
+          </ul>
+          <details>
+            <summary>Timeline of related incidents</summary>
+            <ul class="mt-3 small mb-0">
+              <li>2024-05-08 — Fake grant offers targeting universities.</li>
+              <li>2024-05-12 — Executive sponsorship scam at esports firm.</li>
+              <li>2024-05-18 — Current outreach to your finance analyst.</li>
+            </ul>
+          </details>
+        </section>
+
+        <div class="verification-card mt-4" aria-labelledby="verify-title">
+          <h3 id="verify-title" class="h6 mb-3">Verification &amp; containment checklist</h3>
+          <p class="text-secondary small mb-3">Mark each action once complete to keep stakeholders aligned.</p>
+          <div class="form-check">
+            <input class="form-check-input verify-check" type="checkbox" value="report" id="verify-report">
+            <label class="form-check-label" for="verify-report">Report LinkedIn profile and WhatsApp number to platform trust &amp; safety.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input verify-check" type="checkbox" value="notify" id="verify-notify">
+            <label class="form-check-label" for="verify-notify">Notify finance leadership using official incident channel.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input verify-check" type="checkbox" value="block" id="verify-block">
+            <label class="form-check-label" for="verify-block">Block the number in managed mobile fleet / chat gateway.</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input verify-check" type="checkbox" value="hunt" id="verify-hunt">
+            <label class="form-check-label" for="verify-hunt">Hunt for reuse of <code>securepromo.app</code> across mail and chat logs.</label>
+          </div>
+          <div class="verification-status" id="verify-status" aria-live="polite">0 of 4 actions tracked.</div>
+        </div>
+
+        <div class="step-nav">
+          <button type="button" class="btn btn-outline-secondary" data-nav="prev">Back to Scenario</button>
+          <button type="button" class="btn btn-primary" data-nav="next">Proceed to assessment</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="lab-step" id="step-3" aria-labelledby="step3-title">
+      <div class="p-4 p-md-5">
+        <h2 id="step3-title" class="fw-semibold mb-3">Step 3 · Confirm understanding and capture the flag</h2>
+        <p class="text-secondary">Answer the questions to validate your investigation. Expand the disclosures if you need to double-check the logic.</p>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 1 · Platform escalation</h3>
+          <p class="text-secondary mb-2">Which behaviour most clearly indicates an attempted account takeover?</p>
+          <ul class="text-secondary">
+            <li>A. Asking for webinar slides.</li>
+            <li>B. Requesting to move to WhatsApp for payment processing.</li>
+            <li>C. Thanking you for your time.</li>
+            <li>D. Sharing a conference invite.</li>
+          </ul>
+          <form class="mcq-form" data-answer="b">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1a" value="a">
+              <label class="form-check-label" for="sq1a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1b" value="b">
+              <label class="form-check-label" for="sq1b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1c" value="c">
+              <label class="form-check-label" for="sq1c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1d" value="d">
+              <label class="form-check-label" for="sq1d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-banner mt-3">Correct: <strong>B</strong> — attackers often pivot to unmonitored channels to share malicious links.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 2 · Link safety</h3>
+          <p class="text-secondary mb-2">What should you do before opening the shortened payment link?</p>
+          <ul class="text-secondary">
+            <li>A. Paste directly into browser to test it.</li>
+            <li>B. Forward it to friends to see their reaction.</li>
+            <li>C. Expand it in a safe preview tool to inspect the destination.</li>
+            <li>D. Ignore it and hope for the best.</li>
+          </ul>
+          <form class="mcq-form" data-answer="c">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2a" value="a">
+              <label class="form-check-label" for="sq2a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2b" value="b">
+              <label class="form-check-label" for="sq2b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2c" value="c">
+              <label class="form-check-label" for="sq2c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2d" value="d">
+              <label class="form-check-label" for="sq2d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-banner mt-3">Correct: <strong>C</strong> — always expand shortened links in a safe environment before visiting.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 3 · Country code mismatch</h3>
+          <p class="text-secondary mb-2">Why is the +44 number concerning for this scenario?</p>
+          <ul class="text-secondary">
+            <li>A. Because +44 numbers are premium-rate.</li>
+            <li>B. Your company operates only in North America.</li>
+            <li>C. The number matches the executive sponsor’s direct line.</li>
+            <li>D. International numbers always mean fraud.</li>
+          </ul>
+          <form class="mcq-form" data-answer="b">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3a" value="a">
+              <label class="form-check-label" for="sq3a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3b" value="b">
+              <label class="form-check-label" for="sq3b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3c" value="c">
+              <label class="form-check-label" for="sq3c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3d" value="d">
+              <label class="form-check-label" for="sq3d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-banner mt-3">Correct: <strong>B</strong> — threat actors often register foreign numbers to bypass local trust checks.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 4 · Containment</h3>
+          <p class="text-secondary mb-2">Which action best reduces ongoing exposure?</p>
+          <ul class="text-secondary">
+            <li>A. Reply to the attacker asking for more time.</li>
+            <li>B. Block the phone number and report the profile through official channels.</li>
+            <li>C. Post the link publicly to warn others.</li>
+            <li>D. Save the number as a trusted contact.</li>
+          </ul>
+          <form class="mcq-form" data-answer="b">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4a" value="a">
+              <label class="form-check-label" for="sq4a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4b" value="b">
+              <label class="form-check-label" for="sq4b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4c" value="c">
+              <label class="form-check-label" for="sq4c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4d" value="d">
+              <label class="form-check-label" for="sq4d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-banner mt-3">Correct: <strong>B</strong> — blocking and reporting removes attacker access and alerts platform trust teams.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 5 · Communication</h3>
+          <p class="text-secondary mb-2">Who should receive your incident summary first?</p>
+          <ul class="text-secondary">
+            <li>A. Public relations to draft a press release.</li>
+            <li>B. Finance leadership through the official incident channel.</li>
+            <li>C. Marketing interns for awareness.</li>
+            <li>D. External social media followers.</li>
+          </ul>
+          <form class="mcq-form" data-answer="b">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5a" value="a">
+              <label class="form-check-label" for="sq5a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5b" value="b">
+              <label class="form-check-label" for="sq5b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5c" value="c">
+              <label class="form-check-label" for="sq5c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5d" value="d">
+              <label class="form-check-label" for="sq5d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-banner mt-3">Correct: <strong>B</strong> — notify accountable leaders via official channels before broader awareness.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4">
+          <h3 class="h5">Question 6 · Flag capture</h3>
+          <p class="text-secondary mb-2">Record the completion flag once you finish the assessment.</p>
+          <ul class="text-secondary">
+            <li>A. FLAG-LINK-TRACED</li>
+            <li>B. FLAG-SOCIAL-SHIELDED</li>
+            <li>C. FLAG-IM-SHARED</li>
+            <li>D. FLAG-CHAT-CLOSED</li>
+          </ul>
+          <form class="mcq-form" data-answer="b">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6a" value="a">
+              <label class="form-check-label" for="sq6a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6b" value="b">
+              <label class="form-check-label" for="sq6b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6c" value="c">
+              <label class="form-check-label" for="sq6c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6d" value="d">
+              <label class="form-check-label" for="sq6d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-banner mt-3">Correct: <strong>B</strong> — document <code>FLAG-SOCIAL-SHIELDED</code> for completion tracking.</div>
+          </details>
+        </div>
+
+        <div class="flag-banner mt-4">Completion Flag: <strong>FLAG-SOCIAL-SHIELDED</strong></div>
+
+        <div class="step-nav">
+          <button type="button" class="btn btn-outline-secondary" data-nav="prev">Back to Artefacts</button>
+        </div>
+      </div>
+    </article>
+
+    <section class="standalone-review" aria-labelledby="review-title">
+      <h2 id="review-title" class="h4 text-center mb-4">Standalone MCQ Review</h2>
+      <p class="text-secondary text-center mb-5">Revisit the key questions without the stepper. Select an answer and use the feedback to confirm your understanding.</p>
+
+      <div class="review-card">
+        <h3 class="h6">Question 1</h3>
+        <p class="text-secondary">What is the safest way to inspect a shortened link?</p>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1a" value="a">
+            <label class="form-check-label" for="rq1a">Open it on your primary workstation.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1b" value="b">
+            <label class="form-check-label" for="rq1b">Send it to colleagues to test.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1c" value="c">
+            <label class="form-check-label" for="rq1c">Expand it in a trusted preview or sandbox environment.</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1d" value="d">
+            <label class="form-check-label" for="rq1d">Ignore it forever.</label>
+          </div>
+          <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div class="review-card">
+        <h3 class="h6">Question 2</h3>
+        <p class="text-secondary">Which platform action should you take first?</p>
+        <form class="mcq-form" data-answer="b">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2a" value="a">
+            <label class="form-check-label" for="rq2a">Accept the invitation to be polite.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2b" value="b">
+            <label class="form-check-label" for="rq2b">Report and block the suspicious profile.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2c" value="c">
+            <label class="form-check-label" for="rq2c">Share screenshots on social media.</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2d" value="d">
+            <label class="form-check-label" for="rq2d">Call the attacker for verification.</label>
+          </div>
+          <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div class="review-card">
+        <h3 class="h6">Question 3</h3>
+        <p class="text-secondary">Which flag records successful completion of this lab?</p>
+        <form class="mcq-form" data-answer="b">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3a" value="a">
+            <label class="form-check-label" for="rq3a">FLAG-IM-OPEN</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3b" value="b">
+            <label class="form-check-label" for="rq3b">FLAG-SOCIAL-SHIELDED</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3c" value="c">
+            <label class="form-check-label" for="rq3c">FLAG-LINK-PENDING</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3d" value="d">
+            <label class="form-check-label" for="rq3d">FLAG-CHAT-OPEN</label>
+          </div>
+          <button type="button" class="btn btn-outline-success btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="lab-modules mt-5" aria-labelledby="modules-title">
+      <h2 id="modules-title" class="h4 text-center mb-4">TryHackMe-style Module Breakdown</h2>
+      <p class="text-secondary text-center mb-5">Use these modules to reinforce the lab topics. Each includes visuals, guided reading, and quick wins.</p>
+
+      <div class="module-card row g-0 align-items-stretch mb-4">
+        <div class="col-md-5">
+          <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" alt="Professional reviewing social media profile" loading="lazy">
+        </div>
+        <div class="col-md-7 p-4">
+          <span class="badge bg-success-subtle text-success mb-2">Module 1</span>
+          <h3 class="h5">Assessing Social Profiles</h3>
+          <p class="text-secondary">Learn how to validate connection requests, spot synthetic personas, and confirm employer domains before engaging.</p>
+          <ul class="small text-secondary mb-0">
+            <li>Reverse-image search best practices.</li>
+            <li>Checklist for profile authenticity.</li>
+            <li>Safe escalation routes.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card row g-0 align-items-stretch mb-4">
+        <div class="col-md-5 order-md-2">
+          <img src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?auto=format&fit=crop&w=900&q=80" alt="Person using messaging app on phone" loading="lazy">
+        </div>
+        <div class="col-md-7 p-4 order-md-1">
+          <span class="badge bg-success-subtle text-success mb-2">Module 2</span>
+          <h3 class="h5">Secure Messaging Hygiene</h3>
+          <p class="text-secondary">Follow structured playbooks for WhatsApp, Signal, and Teams to keep corporate conversations protected from phishers.</p>
+          <ul class="small text-secondary mb-0">
+            <li>Out-of-band verification flows.</li>
+            <li>Reporting templates for social platforms.</li>
+            <li>Blocking and logging procedures.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card row g-0 align-items-stretch">
+        <div class="col-md-5">
+          <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=900&q=80" alt="Team analyzing threat intelligence" loading="lazy">
+        </div>
+        <div class="col-md-7 p-4">
+          <span class="badge bg-success-subtle text-success mb-2">Module 3</span>
+          <h3 class="h5">Threat Intel Correlation</h3>
+          <p class="text-secondary">Correlate phone numbers, domains, and handles across incidents to map coordinated social media phishing campaigns.</p>
+          <ul class="small text-secondary mb-0">
+            <li>Pivoting across chat logs and email headers.</li>
+            <li>Building repeatable enrichment workflows.</li>
+            <li>Sharing intel with peers responsibly.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const steps = Array.from(document.querySelectorAll(".lab-step"));
+      const trackerSteps = Array.from(document.querySelectorAll(".tracker-step"));
+      let currentStep = 0;
+
+      function updateStep(index) {
+        steps.forEach((step, i) => {
+          step.classList.toggle("active", i === index);
+        });
+        trackerSteps.forEach((tracker, i) => {
+          tracker.classList.toggle("active", i === index);
+          tracker.classList.toggle("completed", i < index);
+          tracker.setAttribute("aria-current", i === index ? "step" : "false");
+        });
+        currentStep = index;
+      }
+
+      document.querySelectorAll("[data-nav]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const direction = button.getAttribute("data-nav");
+          if (direction === "next" && currentStep < steps.length - 1) {
+            updateStep(currentStep + 1);
+          }
+          if (direction === "prev" && currentStep > 0) {
+            updateStep(currentStep - 1);
+          }
+        });
+      });
+
+      trackerSteps.forEach((tracker, index) => {
+        tracker.addEventListener("click", () => updateStep(index));
+        tracker.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            updateStep(index);
+          }
+        });
+        tracker.setAttribute("tabindex", "0");
+        tracker.setAttribute("role", "button");
+      });
+
+      const clueChecks = document.querySelectorAll(".clue-check");
+      const clueStatus = document.getElementById("clue-status");
+      const totalClues = clueChecks.length;
+
+      clueChecks.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          const checked = Array.from(clueChecks).filter((input) => input.checked).length;
+          clueStatus.textContent = `${checked} of ${totalClues} indicators logged.`;
+          if (checked === totalClues) {
+            clueStatus.textContent += " Excellent coverage!";
+          }
+        });
+      });
+
+      const channelTabs = document.querySelectorAll(".channel-tab");
+      const channelPanels = document.querySelectorAll(".channel-panel");
+
+      channelTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.getAttribute("data-target");
+          channelTabs.forEach((btn) => {
+            btn.classList.toggle("active", btn === tab);
+            btn.setAttribute("aria-selected", btn === tab ? "true" : "false");
+          });
+          channelPanels.forEach((panel) => {
+            panel.classList.toggle("active", panel.id === `channel-${target}`);
+          });
+        });
+      });
+
+      const verifyChecks = document.querySelectorAll(".verify-check");
+      const verifyStatus = document.getElementById("verify-status");
+      const totalVerify = verifyChecks.length;
+
+      verifyChecks.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          const checked = Array.from(verifyChecks).filter((input) => input.checked).length;
+          verifyStatus.textContent = `${checked} of ${totalVerify} actions tracked.`;
+          if (checked === totalVerify) {
+            verifyStatus.textContent += " Response playbook complete!";
+          }
+        });
+      });
+
+      const checkButtons = document.querySelectorAll(".check-answer");
+      checkButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const form = button.closest(".mcq-form");
+          const selected = form.querySelector("input[type='radio']:checked");
+          const feedback = form.querySelector(".mcq-feedback");
+          const answer = form.getAttribute("data-answer");
+
+          if (!selected) {
+            feedback.textContent = "Select an option to check.";
+            feedback.classList.remove("text-success", "text-danger");
+            feedback.classList.add("text-secondary");
+            return;
+          }
+
+          if (selected.value === answer) {
+            feedback.textContent = "Correct!";
+            feedback.classList.remove("text-secondary", "text-danger");
+            feedback.classList.add("text-success");
+          } else {
+            feedback.textContent = "Not quite. Review the artefacts above.";
+            feedback.classList.remove("text-secondary", "text-success");
+            feedback.classList.add("text-danger");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
