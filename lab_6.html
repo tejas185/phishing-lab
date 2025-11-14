@@ -1,1 +1,911 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lab 6 – Business Email Compromise (BEC)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #6366f1;
+      --accent-soft: rgba(99, 102, 241, 0.12);
+    }
+    body {
+      background: #f5f7fb;
+      color: #0f172a;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .lab-container {
+      max-width: 1100px;
+    }
+    .lab-hero {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(129, 140, 248, 0.25));
+      border-radius: 1.5rem;
+      padding: 2.75rem;
+      box-shadow: 0 1.75rem 3.25rem rgba(79, 70, 229, 0.18);
+    }
+    .lab-step {
+      display: none;
+      background: #ffffff;
+      border-radius: 1.25rem;
+      box-shadow: 0 1.25rem 2.5rem rgba(15, 23, 42, 0.08);
+      margin-bottom: 2.5rem;
+    }
+    .lab-step.active {
+      display: block;
+    }
+    .lab-step header {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1.75rem 2rem 1.25rem;
+    }
+    .lab-step .step-body {
+      padding: 2rem;
+    }
+    .progress-tracker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin: 2.5rem 0;
+    }
+    .tracker-step {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.65rem 1.25rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: #ffffff;
+      color: #4338ca;
+      font-weight: 600;
+      box-shadow: 0 0.85rem 1.65rem rgba(79, 70, 229, 0.12);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .tracker-step.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 1rem 2rem rgba(79, 70, 229, 0.35);
+    }
+    .tracker-step.completed {
+      background: rgba(99, 102, 241, 0.08);
+      color: #4338ca;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    .timeline-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1.1rem;
+      background: #f8fafc;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.06);
+    }
+    .timeline-buttons {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .timeline-button {
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 0.9rem;
+      padding: 0.6rem 1.1rem;
+      background: #ffffff;
+      color: #4338ca;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .timeline-button.active,
+    .timeline-button:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      box-shadow: 0 0.75rem 1.25rem rgba(79, 70, 229, 0.25);
+    }
+    .timeline-panel h4 {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+    .indicator-list {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.05);
+    }
+    .indicator-status {
+      font-weight: 600;
+      color: #4338ca;
+    }
+    .tab-buttons {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .tab-button {
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 999px;
+      padding: 0.55rem 1.1rem;
+      background: #ffffff;
+      color: #4338ca;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0.75rem 1.4rem rgba(79, 70, 229, 0.28);
+    }
+    .tab-panel {
+      display: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.05);
+    }
+    .tab-panel.active {
+      display: block;
+    }
+    .ledger-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #f8fafc;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.05);
+    }
+    .risk-meter {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.05);
+    }
+    .risk-indicator {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .actions-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #f8fafc;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.05);
+    }
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0 2rem 2rem;
+      flex-wrap: wrap;
+    }
+    .step-nav button {
+      min-width: 220px;
+    }
+    .assessment-card, .module-card, .review-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.05);
+      margin-bottom: 1.5rem;
+    }
+    .module-card {
+      background: #f8fafc;
+    }
+    .mcq-feedback {
+      min-height: 1.25rem;
+    }
+    .flag-badge {
+      display: inline-block;
+      padding: 0.65rem 1.2rem;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.15);
+      color: #047857;
+      font-weight: 700;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5 lab-container">
+    <section class="lab-hero text-white mb-4">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <h1 class="display-6 fw-bold">Lab 6 – Business Email Compromise (BEC)</h1>
+          <p class="lead mb-3">
+            Navigate a finance team escalation where an attacker spoofs your CFO, sends an urgent
+            vendor payment request, and attempts to bypass callback controls.
+          </p>
+          <p class="mb-0">
+            This dynamic walkthrough layers interactive event timelines, verification tooling, and
+            action planning so you can rehearse the BEC response loop end-to-end.
+          </p>
+        </div>
+        <div class="col-lg-5 text-lg-end">
+          <div class="bg-white text-dark rounded-4 p-4 shadow-lg">
+            <p class="text-uppercase text-secondary fw-semibold small mb-1">Scenario Snapshot</p>
+            <ul class="list-unstyled mb-0 small">
+              <li class="mb-1">• CFO display name spoofed via look-alike domain</li>
+              <li class="mb-1">• Payment redirection to newly “approved” vendor bank</li>
+              <li class="mb-1">• Social engineering attempt to skip voice verification</li>
+              <li>• Finance analyst must validate controls under time pressure</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <nav class="progress-tracker" aria-label="Lab progress">
+      <button class="tracker-step active" data-step="0" aria-current="step">
+        <span class="badge bg-light text-dark">1</span> Briefing &amp; Timeline
+      </button>
+      <button class="tracker-step" data-step="1">
+        <span class="badge bg-light text-dark">2</span> Verification Workbench
+      </button>
+      <button class="tracker-step" data-step="2">
+        <span class="badge bg-light text-dark">3</span> Response Playbook
+      </button>
+      <button class="tracker-step" data-step="3">
+        <span class="badge bg-light text-dark">4</span> Assessment &amp; Flag
+      </button>
+    </nav>
+
+    <article class="lab-step active" id="step-1">
+      <header>
+        <h2 class="h4 mb-1">Step 1 · Briefing &amp; Event Timeline</h2>
+        <p class="text-secondary mb-0">Review the inbound request and catalogue every escalation clue.</p>
+      </header>
+      <div class="step-body">
+        <div class="row g-4 align-items-stretch">
+          <div class="col-lg-7">
+            <div class="timeline-card h-100">
+              <p class="text-secondary small text-uppercase mb-2">Interactive escalation log</p>
+              <div class="timeline-buttons" role="tablist" aria-label="Timeline events">
+                <button class="timeline-button active" data-title="CFO Email: Urgent Transfer" data-time="08:07" data-body="The CFO display name is spoofed using cfo@novac0rp-finance.com, requesting a $185,000 wire within 30 minutes to a new vendor account." data-evidence="Look-alike domain, atypical deadline, unverified beneficiary" aria-selected="true">08:07 · Email</button>
+                <button class="timeline-button" data-title="Finance Analyst Replies" data-time="08:12" data-body="Analyst asks for the vendor PO and callback instructions. The attacker responds insisting the CFO is boarding a flight and cannot answer." data-evidence="Callback avoidance, inconsistent travel reference" aria-selected="false">08:12 · Reply</button>
+                <button class="timeline-button" data-title="Invoice Attachment Opened" data-time="08:16" data-body="Attached PDF shows a supplier logo but references a routing number registered yesterday. Metadata lists generator as 'QuickInvoice Maker 2.1'." data-evidence="Fresh banking details, commodity invoice generator" aria-selected="false">08:16 · Invoice</button>
+                <button class="timeline-button" data-title="Teams Chat Ping" data-time="08:18" data-body="Attacker pivots to Teams, repeating the demand and sharing a shortened tracking link claiming it validates beneficiary onboarding." data-evidence="Platform pivot, suspicious URL shortener" aria-selected="false">08:18 · Teams</button>
+              </div>
+              <div class="timeline-panel" aria-live="polite">
+                <h4 class="fw-semibold" id="timeline-title">CFO Email: Urgent Transfer</h4>
+                <p class="mb-1"><span class="fw-semibold">Time:</span> <span id="timeline-time">08:07</span></p>
+                <p id="timeline-body" class="mb-2">The CFO display name is spoofed using cfo@novac0rp-finance.com, requesting a $185,000 wire within 30 minutes to a new vendor account.</p>
+                <p class="small text-secondary mb-0"><span class="fw-semibold text-dark">Evidence focus:</span> <span id="timeline-evidence">Look-alike domain, atypical deadline, unverified beneficiary</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="indicator-list h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h6 mb-0">Flag the red signals</h3>
+                <span class="indicator-status" id="indicator-status">0 of 5 logged</span>
+              </div>
+              <p class="text-secondary small">Tick each indicator you confirm while reviewing the timeline. Your progress bar updates automatically.</p>
+              <div class="progress mb-3" style="height: 10px;">
+                <div class="progress-bar bg-primary" id="indicator-progress" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"></div>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input indicator-check" type="checkbox" value="" id="ind1">
+                <label class="form-check-label" for="ind1">Display name mismatch with verified CFO address</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input indicator-check" type="checkbox" value="" id="ind2">
+                <label class="form-check-label" for="ind2">Shortened link demanding beneficiary validation</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input indicator-check" type="checkbox" value="" id="ind3">
+                <label class="form-check-label" for="ind3">New routing number with less than 24h history</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input indicator-check" type="checkbox" value="" id="ind4">
+                <label class="form-check-label" for="ind4">Pressure to bypass voice callback policy</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input indicator-check" type="checkbox" value="" id="ind5">
+                <label class="form-check-label" for="ind5">Invoice metadata generated by consumer tooling</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <span></span>
+        <button class="btn btn-primary" data-nav="next">Proceed to verification</button>
+      </div>
+    </article>
+
+    <article class="lab-step" id="step-2">
+      <header>
+        <h2 class="h4 mb-1">Step 2 · Verification Workbench</h2>
+        <p class="text-secondary mb-0">Inspect artefacts using simulated tooling and mark the ledger controls you complete.</p>
+      </header>
+      <div class="step-body">
+        <div class="row g-4">
+          <div class="col-xl-6">
+            <div class="tabbed-tools h-100">
+              <p class="text-secondary small text-uppercase mb-2">Artefact explorer</p>
+              <div class="tab-buttons" role="tablist" aria-label="Verification artefacts">
+                <button class="tab-button active" data-target="headers" aria-selected="true">Header Trace</button>
+                <button class="tab-button" data-target="domain">Domain Intel</button>
+                <button class="tab-button" data-target="invoice">Invoice PDF</button>
+                <button class="tab-button" data-target="teams">Teams Transcript</button>
+              </div>
+              <div class="tab-panel active" id="tab-headers" role="tabpanel">
+                <h3 class="h6">Header Trace</h3>
+                <ul class="small mb-0">
+                  <li>SPF: softfail (IP 185.199.25.44 not authorized)</li>
+                  <li>Reply-To: payments@novacorp-support.com</li>
+                  <li>Mail client: "Outlook for iOS" (but DKIM signed by webmail relay)</li>
+                </ul>
+              </div>
+              <div class="tab-panel" id="tab-domain" role="tabpanel">
+                <h3 class="h6">Domain Intel Snapshot</h3>
+                <ul class="small mb-2">
+                  <li>novac0rp-finance.com registered 9 days ago via privacy guard</li>
+                  <li>No DMARC policy configured; SPF record copied from legitimate novaCorp.com</li>
+                  <li>Passive DNS shows MX pointed to attacker-controlled mailgun instance</li>
+                </ul>
+                <p class="small text-secondary mb-0">Action: escalate to security engineering for takedown.</p>
+              </div>
+              <div class="tab-panel" id="tab-invoice" role="tabpanel">
+                <h3 class="h6">Invoice PDF Metadata</h3>
+                <ul class="small mb-2">
+                  <li>Generator: QuickInvoice Maker 2.1 (consumer)</li>
+                  <li>Bank: SunWest Intl · Routing 026-008-991 · Added yesterday 22:04 UTC</li>
+                  <li>Contact: "Accounts Team" with Gmail reply address</li>
+                </ul>
+                <p class="small text-secondary mb-0">Confidence: fraud. Legit vendor uses HSBC UK.</p>
+              </div>
+              <div class="tab-panel" id="tab-teams" role="tabpanel">
+                <h3 class="h6">Teams Transcript</h3>
+                <p class="small mb-2"><strong>CFO (spoofed):</strong> "Need this done before 9am. Approvals already cleared."</p>
+                <p class="small mb-2"><strong>You:</strong> "Calling now to confirm."</p>
+                <p class="small text-danger mb-0"><strong>CFO (spoofed):</strong> "In meetings. Just process and send proof."</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="ledger-card h-100">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="h6 mb-0">Control ledger</h3>
+                <span class="badge bg-light text-dark" id="ledger-status">0 / 4 verified</span>
+              </div>
+              <p class="text-secondary small">Toggle each control once you complete it. The ledger score updates and informs the risk meter.</p>
+              <div class="list-group list-group-flush">
+                <label class="list-group-item d-flex justify-content-between align-items-start">
+                  <span>
+                    <input class="form-check-input me-2 ledger-check" type="checkbox" value="" id="led1">
+                    Callback CFO via trusted number
+                  </span>
+                  <span class="badge rounded-pill text-bg-danger ledger-pill" data-state="pending">Pending</span>
+                </label>
+                <label class="list-group-item d-flex justify-content-between align-items-start">
+                  <span>
+                    <input class="form-check-input me-2 ledger-check" type="checkbox" value="" id="led2">
+                    Confirm vendor banking details with procurement
+                  </span>
+                  <span class="badge rounded-pill text-bg-danger ledger-pill" data-state="pending">Pending</span>
+                </label>
+                <label class="list-group-item d-flex justify-content-between align-items-start">
+                  <span>
+                    <input class="form-check-input me-2 ledger-check" type="checkbox" value="" id="led3">
+                    Compare routing number against treasury records
+                  </span>
+                  <span class="badge rounded-pill text-bg-warning ledger-pill" data-state="review">Review</span>
+                </label>
+                <label class="list-group-item d-flex justify-content-between align-items-start">
+                  <span>
+                    <input class="form-check-input me-2 ledger-check" type="checkbox" value="" id="led4">
+                    File suspicious email with SOC queue
+                  </span>
+                  <span class="badge rounded-pill text-bg-warning ledger-pill" data-state="review">Review</span>
+                </label>
+              </div>
+              <div class="risk-meter mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h4 class="h6 mb-0">Residual risk</h4>
+                  <span class="risk-indicator text-danger" id="risk-indicator">Critical</span>
+                </div>
+                <p class="small text-secondary mb-2">Move the slider as you complete controls. It highlights the residual risk rating for leadership updates.</p>
+                <input type="range" class="form-range" min="0" max="4" step="1" value="0" id="risk-range">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-outline-secondary" data-nav="prev">Back to briefing</button>
+        <button class="btn btn-primary" data-nav="next">Advance to response</button>
+      </div>
+    </article>
+
+    <article class="lab-step" id="step-3">
+      <header>
+        <h2 class="h4 mb-1">Step 3 · Response Playbook</h2>
+        <p class="text-secondary mb-0">Document escalation actions, stakeholder comms, and containment outcome.</p>
+      </header>
+      <div class="step-body">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="actions-card h-100">
+              <p class="text-secondary small text-uppercase mb-2">Operational actions</p>
+              <ul class="list-unstyled mb-0">
+                <li class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input action-check" type="checkbox" value="" id="act1">
+                    <label class="form-check-label" for="act1">Escalate to treasury to freeze outbound wires</label>
+                  </div>
+                  <p class="small text-secondary ms-4 mb-0">Prevents duplicate or partial transfers while investigation proceeds.</p>
+                </li>
+                <li class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input action-check" type="checkbox" value="" id="act2">
+                    <label class="form-check-label" for="act2">Coordinate with legal for fraud affidavit prep</label>
+                  </div>
+                  <p class="small text-secondary ms-4 mb-0">Ensures documentation is ready for the bank if funds move.</p>
+                </li>
+                <li>
+                  <div class="form-check">
+                    <input class="form-check-input action-check" type="checkbox" value="" id="act3">
+                    <label class="form-check-label" for="act3">Notify targeted executive via secure channel</label>
+                  </div>
+                  <p class="small text-secondary ms-4 mb-0">Allows leadership to broadcast internal warning and reset credentials.</p>
+                </li>
+              </ul>
+              <div class="alert alert-info small mt-3 mb-0" role="status" id="action-status">0 of 3 response actions checked.</div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="risk-meter h-100">
+              <p class="text-secondary small text-uppercase mb-2">Communication planner</p>
+              <div class="d-flex flex-column gap-3">
+                <div>
+                  <label for="audience-select" class="form-label mb-1">Primary audience</label>
+                  <select class="form-select" id="audience-select">
+                    <option value="exec">Executive Leadership</option>
+                    <option value="finance">Finance Ops</option>
+                    <option value="soc">Security Operations</option>
+                    <option value="vendor">Vendor Management</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="message-template" class="form-label mb-1">Suggested message</label>
+                  <textarea class="form-control" id="message-template" rows="5" readonly>Executive Leadership update:
+- Suspicious wire request blocked pending verification.
+- Controls enforced: callback required, treasury freeze active.
+- Next step: confirm CFO status and coordinate legal follow-up.</textarea>
+                </div>
+                <div class="alert alert-secondary small mb-0" role="status" id="audience-tip">Tip: Highlight blocked transaction and outstanding verifications.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-outline-secondary" data-nav="prev">Back to verification</button>
+        <button class="btn btn-primary" data-nav="next">Go to assessment</button>
+      </div>
+    </article>
+
+    <article class="lab-step" id="step-4">
+      <header>
+        <h2 class="h4 mb-1">Step 4 · Assessment &amp; Flag</h2>
+        <p class="text-secondary mb-0">Answer the knowledge check to surface the completion flag.</p>
+      </header>
+      <div class="step-body">
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="assessment-card h-100">
+              <h3 class="h6">Question 1</h3>
+              <p class="text-secondary">What control most directly stops this BEC attempt?</p>
+              <form class="mcq-form" data-answer="b">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="q1" id="q1a" value="a">
+                  <label class="form-check-label" for="q1a">Processing the wire immediately to satisfy the CFO.</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="q1" id="q1b" value="b">
+                  <label class="form-check-label" for="q1b">Calling the CFO on a known good number to verify the transfer.</label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="q1" id="q1c" value="c">
+                  <label class="form-check-label" for="q1c">Sending the invoice to all staff to crowdsource opinions.</label>
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+                <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+              </form>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="assessment-card h-100">
+              <h3 class="h6">Question 2</h3>
+              <p class="text-secondary">Why is the invoice metadata a strong indicator of fraud?</p>
+              <form class="mcq-form" data-answer="c">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="q2" id="q2a" value="a">
+                  <label class="form-check-label" for="q2a">It uses the company font pack.</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="q2" id="q2b" value="b">
+                  <label class="form-check-label" for="q2b">It lists the correct vendor contact details.</label>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="radio" name="q2" id="q2c" value="c">
+                  <label class="form-check-label" for="q2c">It was generated with consumer software and brand-new banking info.</label>
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+                <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="assessment-card mt-4">
+          <h3 class="h6">Question 3</h3>
+          <p class="text-secondary">Which communication priority should you brief to executives?</p>
+          <form class="mcq-form" data-answer="d">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="q3" id="q3a" value="a">
+              <label class="form-check-label" for="q3a">Emphasize how fast finance nearly approved it.</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="q3" id="q3b" value="b">
+              <label class="form-check-label" for="q3b">Request everyone ignore policies next time to move faster.</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="q3" id="q3c" value="c">
+              <label class="form-check-label" for="q3c">Share the attacker’s routing number publicly.</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="q3" id="q3d" value="d">
+              <label class="form-check-label" for="q3d">Highlight the blocked transfer and remaining verification steps.</label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+        </div>
+        <div class="assessment-card text-center mt-4">
+          <h3 class="h5">Completion Flag</h3>
+          <p class="text-secondary mb-0">Answer all questions correctly and document your findings. Use this flag to record success.</p>
+          <span class="flag-badge">FLAG-BEC-SHIELDED</span>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-outline-secondary" data-nav="prev">Back to response</button>
+        <span></span>
+      </div>
+    </article>
+
+    <section class="mt-5">
+      <h2 class="h4 mb-3">TryHackMe-style Module Breakdown</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="module-card h-100">
+            <h3 class="h6">Module 1 · Spot the Spoof</h3>
+            <p class="text-secondary small">Dissect the inbound email, Teams chat, and invoice artefacts to prove impersonation.</p>
+            <ul class="small mb-0">
+              <li>Header analysis</li>
+              <li>Timeline reconstruction</li>
+              <li>Red flag cataloguing</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="module-card h-100">
+            <h3 class="h6">Module 2 · Control the Cash</h3>
+            <p class="text-secondary small">Walk through financial control checkpoints to stop fraudulent disbursements.</p>
+            <ul class="small mb-0">
+              <li>Ledger verification</li>
+              <li>Callback enforcement</li>
+              <li>Residual risk tracking</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="module-card h-100">
+            <h3 class="h6">Module 3 · Communicate &amp; Contain</h3>
+            <p class="text-secondary small">Craft stakeholder updates and finalize the BEC incident response deliverables.</p>
+            <ul class="small mb-0">
+              <li>Escalation briefing</li>
+              <li>Executive messaging</li>
+              <li>Flag capture</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-5">
+      <h2 class="h4 mb-3">Standalone MCQ Review</h2>
+      <p class="text-secondary">Use these offline checks to reinforce the core concepts without navigating the stepper.</p>
+      <div class="review-card">
+        <h3 class="h6">Question 1</h3>
+        <p class="text-secondary">Which policy prevented the attacker from succeeding?</p>
+        <form class="mcq-form" data-answer="a">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1a" value="a">
+            <label class="form-check-label" for="rq1a">Mandatory out-of-band callback for wire approvals.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1b" value="b">
+            <label class="form-check-label" for="rq1b">Allowing shortened URLs for convenience.</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1c" value="c">
+            <label class="form-check-label" for="rq1c">Paying all invoices automatically.</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+      <div class="review-card">
+        <h3 class="h6">Question 2</h3>
+        <p class="text-secondary">What’s the safest next step after blocking the transfer?</p>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2a" value="a">
+            <label class="form-check-label" for="rq2a">Delete all evidence to keep inbox clean.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2b" value="b">
+            <label class="form-check-label" for="rq2b">Send money to a different new vendor instead.</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2c" value="c">
+            <label class="form-check-label" for="rq2c">File the incident with security and begin executive notifications.</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+      <div class="review-card">
+        <h3 class="h6">Question 3</h3>
+        <p class="text-secondary">Record the completion flag below once you’ve reviewed the lab.</p>
+        <p class="flag-badge mb-0">FLAG-BEC-SHIELDED</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const steps = Array.from(document.querySelectorAll(".lab-step"));
+      const trackerSteps = Array.from(document.querySelectorAll(".tracker-step"));
+      let currentStep = 0;
+
+      function updateStep(index) {
+        steps.forEach((step, i) => {
+          step.classList.toggle("active", i === index);
+        });
+        trackerSteps.forEach((tracker, i) => {
+          tracker.classList.toggle("active", i === index);
+          tracker.classList.toggle("completed", i < index);
+          tracker.setAttribute("aria-current", i === index ? "step" : "false");
+        });
+        currentStep = index;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      document.querySelectorAll("[data-nav]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const direction = button.getAttribute("data-nav");
+          if (direction === "next" && currentStep < steps.length - 1) {
+            updateStep(currentStep + 1);
+          }
+          if (direction === "prev" && currentStep > 0) {
+            updateStep(currentStep - 1);
+          }
+        });
+      });
+
+      trackerSteps.forEach((tracker, index) => {
+        tracker.addEventListener("click", () => updateStep(index));
+        tracker.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            updateStep(index);
+          }
+        });
+        tracker.setAttribute("tabindex", "0");
+        tracker.setAttribute("role", "button");
+      });
+
+      const timelineButtons = document.querySelectorAll(".timeline-button");
+      const timelineTitle = document.getElementById("timeline-title");
+      const timelineTime = document.getElementById("timeline-time");
+      const timelineBody = document.getElementById("timeline-body");
+      const timelineEvidence = document.getElementById("timeline-evidence");
+
+      timelineButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          timelineButtons.forEach((btn) => {
+            btn.classList.toggle("active", btn === button);
+            btn.setAttribute("aria-selected", btn === button ? "true" : "false");
+          });
+          timelineTitle.textContent = button.getAttribute("data-title");
+          timelineTime.textContent = button.getAttribute("data-time");
+          timelineBody.textContent = button.getAttribute("data-body");
+          timelineEvidence.textContent = button.getAttribute("data-evidence");
+        });
+      });
+
+      const indicatorChecks = document.querySelectorAll(".indicator-check");
+      const indicatorStatus = document.getElementById("indicator-status");
+      const indicatorProgress = document.getElementById("indicator-progress");
+      const totalIndicators = indicatorChecks.length;
+
+      function refreshIndicatorStatus() {
+        const checkedCount = Array.from(indicatorChecks).filter((input) => input.checked).length;
+        indicatorStatus.textContent = `${checkedCount} of ${totalIndicators} logged`;
+        const percent = (checkedCount / totalIndicators) * 100;
+        indicatorProgress.style.width = `${percent}%`;
+        indicatorProgress.setAttribute("aria-valuenow", checkedCount);
+        if (checkedCount === totalIndicators) {
+          indicatorStatus.textContent += " · Excellent coverage";
+        }
+      }
+
+      indicatorChecks.forEach((checkbox) => {
+        checkbox.addEventListener("change", refreshIndicatorStatus);
+      });
+
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabPanels = document.querySelectorAll(".tab-panel");
+
+      tabButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.getAttribute("data-target");
+          tabButtons.forEach((btn) => {
+            btn.classList.toggle("active", btn === button);
+            btn.setAttribute("aria-selected", btn === button ? "true" : "false");
+          });
+          tabPanels.forEach((panel) => {
+            panel.classList.toggle("active", panel.id === `tab-${target}`);
+          });
+        });
+      });
+
+      const ledgerChecks = document.querySelectorAll(".ledger-check");
+      const ledgerStatus = document.getElementById("ledger-status");
+      const riskIndicator = document.getElementById("risk-indicator");
+      const riskRange = document.getElementById("risk-range");
+
+      function updateLedger() {
+        const completed = Array.from(ledgerChecks).filter((input) => input.checked).length;
+        ledgerStatus.textContent = `${completed} / ${ledgerChecks.length} verified`;
+        riskRange.value = completed;
+        ledgerChecks.forEach((checkbox) => {
+          const pill = checkbox.closest("label").querySelector(".ledger-pill");
+          if (!pill) return;
+          const baseState = pill.getAttribute("data-state");
+          const stateMap = {
+            pending: { text: "Pending", className: "text-bg-danger" },
+            review: { text: "Review", className: "text-bg-warning" }
+          };
+          if (checkbox.checked) {
+            pill.textContent = "Done";
+            pill.className = "badge rounded-pill text-bg-success ledger-pill";
+          } else {
+            const base = stateMap[baseState] || { text: "Review", className: "text-bg-warning" };
+            pill.textContent = base.text;
+            pill.className = `badge rounded-pill ${base.className} ledger-pill`;
+          }
+        });
+        updateRiskIndicator(completed);
+      }
+
+      function updateRiskIndicator(value) {
+        let label = "Critical";
+        let color = "text-danger";
+        if (value === 1) {
+          label = "High";
+          color = "text-danger";
+        } else if (value === 2) {
+          label = "Elevated";
+          color = "text-warning";
+        } else if (value === 3) {
+          label = "Guarded";
+          color = "text-primary";
+        } else if (value >= 4) {
+          label = "Controlled";
+          color = "text-success";
+        }
+        riskIndicator.textContent = label;
+        riskIndicator.className = `risk-indicator ${color}`;
+      }
+
+      ledgerChecks.forEach((checkbox) => {
+        checkbox.addEventListener("change", updateLedger);
+      });
+
+      riskRange.addEventListener("input", (event) => {
+        const value = parseInt(event.target.value, 10);
+        ledgerChecks.forEach((checkbox, index) => {
+          checkbox.checked = index < value;
+        });
+        updateLedger();
+      });
+
+      const actionChecks = document.querySelectorAll(".action-check");
+      const actionStatus = document.getElementById("action-status");
+
+      actionChecks.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          const completed = Array.from(actionChecks).filter((input) => input.checked).length;
+          actionStatus.textContent = `${completed} of ${actionChecks.length} response actions checked.`;
+          if (completed === actionChecks.length) {
+            actionStatus.classList.remove("alert-info");
+            actionStatus.classList.add("alert-success");
+            actionStatus.textContent += " Playbook complete!";
+          } else {
+            actionStatus.classList.remove("alert-success");
+            actionStatus.classList.add("alert-info");
+          }
+        });
+      });
+
+      const audienceSelect = document.getElementById("audience-select");
+      const messageTemplate = document.getElementById("message-template");
+      const audienceTip = document.getElementById("audience-tip");
+
+      const audienceMessages = {
+        exec: {
+          text: "Executive Leadership update:\n- Suspicious wire request blocked pending verification.\n- Controls enforced: callback required, treasury freeze active.\n- Next step: confirm CFO status and coordinate legal follow-up.",
+          tip: "Tip: Highlight blocked transaction and outstanding verifications."
+        },
+        finance: {
+          text: "Finance Ops update:\n- Wire transfer paused until vendor callback clears.\n- Need procurement confirmation of banking change.\n- Document actions in ledger and notify treasury once validated.",
+          tip: "Tip: Emphasize control ownership and documentation."
+        },
+        soc: {
+          text: "Security Operations update:\n- BEC attempt leveraging spoofed CFO domain.\n- Indicators: SPF softfail, new domain registration, Teams pivot.\n- Actions requested: block domain, hunt similar lures, prep takedown.",
+          tip: "Tip: Provide IOCs and desired containment outcomes."
+        },
+        vendor: {
+          text: "Vendor Management update:\n- Received fraudulent request altering your banking details.\n- Please confirm approved accounts via secure callback.\n- Treat any new routing requests as suspicious pending review.",
+          tip: "Tip: Reinforce verification expectations and secure channels."
+        }
+      };
+
+      audienceSelect.addEventListener("change", (event) => {
+        const option = event.target.value;
+        const data = audienceMessages[option];
+        messageTemplate.value = data.text;
+        audienceTip.textContent = data.tip;
+      });
+
+      const checkButtons = document.querySelectorAll(".check-answer");
+      checkButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const form = button.closest(".mcq-form");
+          const selected = form.querySelector("input[type='radio']:checked");
+          const feedback = form.querySelector(".mcq-feedback");
+          const answer = form.getAttribute("data-answer");
+
+          if (!selected) {
+            feedback.textContent = "Select an option to check.";
+            feedback.classList.remove("text-success", "text-danger");
+            feedback.classList.add("text-secondary");
+            return;
+          }
+
+          if (selected.value === answer) {
+            feedback.textContent = "Correct!";
+            feedback.classList.remove("text-secondary", "text-danger");
+            feedback.classList.add("text-success");
+          } else {
+            feedback.textContent = "Not quite. Review the artefacts above.";
+            feedback.classList.remove("text-secondary", "text-success");
+            feedback.classList.add("text-danger");
+          }
+        });
+      });
+
+      refreshIndicatorStatus();
+      updateLedger();
+    });
+  </script>
+</body>
+</html>
