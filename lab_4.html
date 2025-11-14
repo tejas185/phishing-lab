@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -703,53 +702,111 @@ Authentication-Results: mx.internal.corp;
         guided reading, screenshots, and self-check prompts.</p>
 
       <div class="module-card row g-0 align-items-stretch mb-4">
-        <div class="col-md-5">
-          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80" alt="Analyst reviewing email headers" loading="lazy">
-        </div>
-        <div class="col-md-7 p-4">
-          <span class="badge bg-info text-dark mb-2">Module 1</span>
-          <h3 class="h5">Email Authentication Primer</h3>
-          <p class="text-secondary">Deep dive on SPF, DKIM, and DMARC failures with screenshot-based callouts for quick reference.</p>
-          <ul class="small text-secondary mb-0">
-            <li>Understand authentication result fields.</li>
-            <li>Practice tracing Received headers.</li>
-            <li>Document findings for escalation.</li>
-          </ul>
-        </div>
-      </div>
+  <div class="col-md-5">
+    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80" 
+         alt="Analyst reviewing email headers" loading="lazy">
+  </div>
+
+  <div class="col-md-7 p-4">
+    <span class="badge bg-info text-dark mb-2">Module 1</span>
+
+    <h3 class="h5">Email Authentication Primer</h3>
+
+    <p class="text-secondary">
+      This module introduces the core email authentication mechanisms—SPF, DKIM, and DMARC—
+      and explains how attackers exploit misconfigurations to deliver phishing messages that 
+      appear trustworthy. You will learn to read authentication results, correlate header 
+      anomalies, and identify when emails bypass expected validation controls.
+    </p>
+
+    <ul class="small text-secondary mb-0">
+      <li>
+        Understand how SPF, DKIM, and DMARC fields determine message legitimacy and what 
+        common failure patterns look like during phishing attempts.
+      </li>
+      <li>
+        Practice tracing <strong>Received</strong> headers to map the real delivery path and 
+        uncover hidden relays or unexpected sending servers.
+      </li>
+      <li>
+        Document authentication failures and header anomalies clearly for escalation to SOC 
+        or email security teams.
+      </li>
+    </ul>
+  </div>
+</div>
+
 
       <div class="module-card row g-0 align-items-stretch mb-4">
-        <div class="col-md-5 order-md-2">
-          <img src="https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=900&q=80" alt="Team running threat intelligence searches" loading="lazy">
-        </div>
-        <div class="col-md-7 p-4 order-md-1">
-          <span class="badge bg-info text-dark mb-2">Module 2</span>
-          <h3 class="h5">Reputation &amp; Infrastructure Enrichment</h3>
-          <p class="text-secondary">Use passive DNS, WHOIS snapshots, and threat intel feeds to confirm malicious infrastructure.</p>
-          <ul class="small text-secondary mb-0">
-            <li>Review domain age indicators.</li>
-            <li>Map shared hosting footprints.</li>
-            <li>Prepare data for takedowns.</li>
-          </ul>
-        </div>
-      </div>
+  <div class="col-md-5 order-md-2">
+    <img src="https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=900&q=80"
+         alt="Team running threat intelligence searches" loading="lazy">
+  </div>
 
-      <div class="module-card row g-0 align-items-stretch">
-        <div class="col-md-5">
-          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Security operations reviewing sandbox output" loading="lazy">
-        </div>
-        <div class="col-md-7 p-4">
-          <span class="badge bg-info text-dark mb-2">Module 3</span>
-          <h3 class="h5">Sandbox &amp; Response Playbook</h3>
-          <p class="text-secondary">Learn how to translate sandbox evidence into actionable blocks, detections, and communication
-            templates.</p>
-          <ul class="small text-secondary mb-0">
-            <li>Create quick containments.</li>
-            <li>Draft incident updates.</li>
-            <li>Capture final flags for audit logs.</li>
-          </ul>
-        </div>
-      </div>
+  <div class="col-md-7 p-4 order-md-1">
+    <span class="badge bg-info text-dark mb-2">Module 2</span>
+
+    <h3 class="h5">Reputation &amp; Infrastructure Enrichment</h3>
+
+    <p class="text-secondary">
+      This module teaches you how to validate suspicious domains and URLs using reputation 
+      intelligence and backend infrastructure analysis. By combining passive DNS history, 
+      WHOIS records, and threat intelligence feeds, you can determine whether a domain 
+      is part of an active phishing campaign or newly staged malicious setup.
+    </p>
+
+    <ul class="small text-secondary mb-0">
+      <li>
+        Review domain age, registrar history, and sudden ownership changes—key indicators 
+        of newly registered or rapidly repurposed malicious infrastructure.
+      </li>
+      <li>
+        Map shared hosting, name servers, and IP relationships to uncover clusters of domains 
+        controlled by the same attacker or hosting provider.
+      </li>
+      <li>
+        Prepare enriched intelligence—screenshots, DNS trails, WHOIS snapshots, and abuse 
+        evidence—to support domain takedown requests or escalations to SOC teams.
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+     <div class="module-card row g-0 align-items-stretch">
+  <div class="col-md-5">
+    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" 
+         alt="Security operations reviewing sandbox output" loading="lazy">
+  </div>
+
+  <div class="col-md-7 p-4">
+    <span class="badge bg-info text-dark mb-2">Module 3</span>
+
+    <h3 class="h5">Sandbox &amp; Response Playbook</h3>
+
+    <p class="text-secondary">
+      This module guides you through interpreting sandbox results and converting them into rapid, 
+      effective incident response actions. You will learn how to assess behavioural indicators, 
+      create containment steps, and communicate findings in a structured, SOC-ready format.
+    </p>
+
+    <ul class="small text-secondary mb-0">
+      <li>
+        Create quick containment measures based on sandbox detections—blocking command-and-control 
+        hosts, isolating endpoints, and updating mail filters.
+      </li>
+      <li>
+        Draft clear incident updates for SOC, legal, and leadership teams using consistent 
+        communication templates derived from sandbox artefacts.
+      </li>
+      <li>
+        Capture final flags—including hashes, IOCs, behavioural notes, and timestamps—to ensure 
+        complete audit logs for post-incident review and compliance reporting.
+      </li>
+    </ul>
+  </div>
+</div>
+
     </section>
 
   </div>
