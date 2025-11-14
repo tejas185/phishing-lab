@@ -834,12 +834,14 @@ X-LinkScan: new-domain alert triggered
               <span class="badge text-bg-primary">Module 01</span>
               <span class="text-secondary small">Est. time: 10 minutes</span>
             </div>
-            <h3 class="h5">Email & Header Reconnaissance</h3>
-            <p class="text-secondary">Extract sender domains, evaluate SPF results, and document red flags before interacting with any links.</p>
+            <h3 class="h5">URL & Domain Analysis</h3>
+            <p class="text-secondary">Identify the true identity of any web address by breaking down its protocol, domain, subdomains, and path. This analysis helps detect phishing sites that use deceptive techniques such as lookalike domains, character substitutions, and misleading subdomains.</p>
+            <p class="text-secondary text-dark"> Key risks include:</p>
             <ul class="text-secondary small mb-4">
-              <li class="mb-2">Compare claimed domains with trusted vendor records.</li>
-              <li class="mb-2">Identify authentication failures such as SPF softfail.</li>
-              <li>Catalogue urgency language used to pressure the recipient.</li>
+              <li class="mb-2">Typosquatting: Misspelled or mistyped versions of popular domains.</li>
+              <li class="mb-2">IDN Homograph Attacks: Visually identical characters from other languages that mimic real domains.</li>
+              <li>Subdomain Abuse: Trusted brand names placed in subdomains to disguise malicious domains.</li>
+              <li>Lookalike Domains: Newly registered domains crafted to imitate legitimate services for credential harvesting.</li>
             </ul>
             <span class="badge rounded-pill text-bg-light text-secondary mt-auto">Skills: Email forensics · Threat hunting · Vendor validation</span>
           </div>
@@ -847,48 +849,100 @@ X-LinkScan: new-domain alert triggered
       </div>
 
       <div class="module-card row g-0 align-items-stretch">
-        <div class="col-md-5 order-md-2">
-          <img src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=900&q=80" alt="Browser developer tools inspection" loading="lazy">
-        </div>
-        <div class="col-md-7 order-md-1">
-          <div class="module-body h-100 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="badge text-bg-primary">Module 02</span>
-              <span class="text-secondary small">Est. time: 15 minutes</span>
-            </div>
-            <h3 class="h5">Inspect Live URL Signals</h3>
-            <p class="text-secondary">Load the suspicious link in a controlled environment to capture certificate data, redirects, and DNS indicators.</p>
-            <ul class="text-secondary small mb-4">
-              <li class="mb-2">Validate certificate issuers and subject fields.</li>
-              <li class="mb-2">Trace redirect chains for protocol downgrades.</li>
-              <li>Correlate passive DNS with previously blocked infrastructure.</li>
-            </ul>
-            <span class="badge rounded-pill text-bg-light text-secondary mt-auto">Skills: TLS review · Redirect tracing · DNS intelligence</span>
-          </div>
-        </div>
+  <div class="col-md-5 order-md-2">
+    <img src="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=900&q=80" 
+         alt="Browser developer tools inspection" loading="lazy">
+  </div>
+
+  <div class="col-md-7 order-md-1">
+    <div class="module-body h-100 d-flex flex-column">
+
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge text-bg-primary">Module 02</span>
+        <span class="text-secondary small">Est. time: 15 minutes</span>
       </div>
 
+      <h3 class="h5">Inspect Live URL Signals</h3>
+
+      <br>
+
+      <p class="text-secondary">
+        This module focuses on analyzing a suspicious URL in a controlled environment 
+        to uncover technical signals that reveal whether a link is trustworthy or malicious. 
+        By observing certificates, redirects, and DNS behavior, you will learn how attackers 
+        disguise phishing infrastructure behind seemingly legitimate web paths.
+      </p>
+
+      <ul class="text-secondary small mb-4">
+        <li class="mb-2">
+          Review certificate details to verify issuer authenticity, expiration dates, and 
+          domain mismatch indicators that often reveal fraudulent hosts.
+        </li>
+        <li class="mb-2">
+          Track redirect chains to spot protocol downgrades, forced HTTP transitions, 
+          or hidden hops designed to obscure the final malicious destination.
+        </li>
+        <li>
+          Correlate passive DNS records to identify reused attacker infrastructure, 
+          newly registered domains, or links associated with previously flagged campaigns.
+        </li>
+      </ul>
+
+      <span class="badge rounded-pill text-bg-light text-secondary mt-auto">
+        Skills: Certificate validation · Redirect chain analysis · DNS intelligence
+      </span>
+
+    </div>
+  </div>
+</div>
+
+
       <div class="module-card row g-0 align-items-stretch mb-0">
-        <div class="col-md-5">
-          <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" alt="Team discussing incident response" loading="lazy">
-        </div>
-        <div class="col-md-7">
-          <div class="module-body h-100 d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="badge text-bg-primary">Module 03</span>
-              <span class="text-secondary small">Est. time: 8 minutes</span>
-            </div>
-            <h3 class="h5">Respond &amp; Report</h3>
-            <p class="text-secondary">Coordinate with security operations, notify the vendor through trusted channels, and log the completion flag.</p>
-            <ul class="text-secondary small mb-4">
-              <li class="mb-2">Escalate phishing indicators with documented artefacts.</li>
-              <li class="mb-2">Request takedown assistance if the clone remains live.</li>
-              <li>Share lessons learned to improve vendor validation workflows.</li>
-            </ul>
-            <span class="badge rounded-pill text-bg-light text-secondary mt-auto">Skills: Incident communication · Vendor coordination · Knowledge retention</span>
-          </div>
-        </div>
+  <div class="col-md-5">
+    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" 
+         alt="Team discussing incident response" loading="lazy">
+  </div>
+
+  <div class="col-md-7">
+    <div class="module-body h-100 d-flex flex-column">
+
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="badge text-bg-primary">Module 03</span>
+        <span class="text-secondary small">Est. time: 8 minutes</span>
       </div>
+
+      <h3 class="h5">Respond & Report</h3>
+
+      <p class="text-secondary">
+        This module walks you through the final response steps after confirming a suspicious 
+        or malicious URL. You will learn how to escalate findings to security operations, 
+        notify relevant vendors using verified communication channels, and properly record 
+        your investigative outcomes to support future threat intelligence improvements.
+      </p>
+
+      <ul class="text-secondary small mb-4">
+        <li class="mb-2">
+          Escalate phishing indicators with complete supporting artefacts, including URLs, 
+          screenshots, certificate details, and redirect logs for efficient triage.
+        </li>
+        <li class="mb-2">
+          Request takedown assistance if the cloned page or phishing infrastructure is still live, 
+          ensuring the threat is neutralized before more users are impacted.
+        </li>
+        <li>
+          Document lessons learned and share insights with incident response and vendor teams 
+          to strengthen future validation workflows and reduce recurrence.
+        </li>
+      </ul>
+
+      <span class="badge rounded-pill text-bg-light text-secondary mt-auto">
+        Skills: Incident communication · Vendor coordination · Knowledge retention
+      </span>
+
+    </div>
+  </div>
+</div>
+
     </section>
 
 
