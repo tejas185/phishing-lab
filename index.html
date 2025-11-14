@@ -1,316 +1,228 @@
-{{define "body"}}
-<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-    <h1 class="page-header">Lab 1 – Clone Phishing</h1>
-    <div id="flashes" class="row"></div>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Phishing Labs – Index</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Screen 1: Email view -->
-    <div id="lab-email-screen">
-        <div class="row">
-            <div class="col-lg-7">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Phishing Email</strong></div>
-                    <div class="panel-body">
-                        <p class="text-muted">
-                            Inspect the sender and the content of this email. Then click
-                            <strong>View Salary Statement</strong> to continue.
-                        </p>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-                        <div class="well">
-                            <p><strong>Subject:</strong> Salary Statement for This Month Available</p>
-                            <p><strong>From:</strong> HR Department &lt;hr-payroll@acmecorp-pay.com&gt;</p>
-                            <p><strong>To:</strong> you@acmecorp.com</p>
-                            <hr>
-                            <p>Dear Employee,</p>
-                            <p>
-                                Your monthly salary statement has been generated. For security reasons,
-                                you are required to log in to the HR Portal to view and download your statement.
-                            </p>
-                            <p>Please click the button below to securely access your salary details:</p>
-                            <button class="btn btn-primary" id="openCloneBtn">
-                                View Salary Statement
-                            </button>
-                            <p class="m-t-md">
-                                Regards,<br>
-                                HR &amp; Payroll Team<br>
-                                Acme Corp
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Task panel for step 1 -->
-            <div class="col-lg-5">
-                <div class="panel panel-info">
-                    <div class="panel-heading"><strong>Task Panel – Step 1</strong></div>
-                    <div class="panel-body">
-                        <p><strong>Task 1 – Inspect the sender</strong></p>
-                        <p class="small">
-                            Look carefully at the <code>From</code> email address. Does the domain belong to the
-                            official company (<code>acmecorp.com</code>) or is it slightly different?
-                        </p>
-                        <p class="small">
-                            The attacker uses a look-alike domain:
-                            <code>acmecorp-pay.com</code>.
-                        </p>
-                        <p class="small">
-                            Suggested flag format:
-                            <code>FLAG{suspicious-sender}</code>
-                        </p>
-                        <hr>
-                        <p class="small">
-                            When ready, click <strong>View Salary Statement</strong> to open the cloned login page.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <style>
+    body {
+      background-color: #f4f5f7;
+    }
+    .lab-header {
+      border-bottom: 1px solid #e1e5ea;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+    }
+    .lab-card {
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      height: 100%;
+    }
+    .lab-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.08);
+    }
+    .lab-badge {
+      font-size: 0.75rem;
+    }
+    .lab-footer-text {
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4">
+    <!-- Header -->
+    <div class="lab-header d-flex flex-wrap justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-0">Phishing Awareness Labs</h2>
+        <p class="text-muted mb-0">
+          Select a lab to start the guided, TryHackMe-style exercise.
+        </p>
+      </div>
+      <span class="badge bg-primary lab-badge mt-2 mt-sm-0">
+        Final Year Project – Phishing Simulator
+      </span>
     </div>
 
-    <!-- Screen 2: Cloned login page -->
-    <div id="lab-login-screen" style="display:none;">
-        <div class="row">
-            <div class="col-lg-7">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><strong>Cloned HR Login Page</strong></div>
-                    <div class="panel-body">
+    <!-- Labs grid -->
+    <div class="row g-4">
 
-                        <!-- Fake browser bar -->
-                        <div class="well well-sm" style="background:#343a40;color:#f8f9fa;border-radius:4px;">
-                            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff5f57;"></span>
-                            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#febc2e;"></span>
-                            <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#28c840;"></span>
-                            <span class="text-danger" style="margin-left:10px;">Not secure</span>
-                            <span style="margin-left:10px;padding:3px 8px;background:#495057;border-radius:4px;font-family:monospace;">
-                                http://hr-acmecorp-pay.com/login
-                            </span>
-                        </div>
-
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="text-center m-b-md">
-                                    <div style="width:52px;height:52px;border-radius:12px;background:#337ab7;
-                                                display:inline-flex;align-items:center;justify-content:center;
-                                                color:#fff;font-size:24px;font-weight:bold;">
-                                        H
-                                    </div>
-                                    <h4>Acme HR Portal</h4>
-                                    <p class="text-muted">Sign in with your corporate credentials</p>
-                                </div>
-
-                                <form id="cloneLoginForm">
-                                    <div class="form-group">
-                                        <label for="email">Corporate Email</label>
-                                        <input type="email" class="form-control" id="email" placeholder="you@acmecorp.com" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox"> Remember me
-                                        </label>
-                                        <a href="#" class="pull-right small">Forgot password?</a>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-                                </form>
-
-                                <p class="small text-muted m-t-md">
-                                    Note: This is a training environment. No real credentials are stored.
-                                </p>
-
-                                <div id="training-result" class="alert alert-info m-t-md" style="display:none;">
-                                    <strong>Training Message:</strong><br>
-                                    This was a cloned phishing page used for awareness.<br>
-                                    Suggested flag:
-                                    <code>FLAG{credentials-captured-safely}</code>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Hidden HTML comment flag (visible only in View Source) -->
-                        <!-- training_flag = FLAG{cloned-website-found} -->
-                    </div>
-                </div>
+      <!-- Lab 1 – Clone Phishing -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card lab-card shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-success lab-badge">Available</span>
+              <span class="badge bg-secondary lab-badge">Easy → Medium</span>
             </div>
-
-            <!-- Task / Flag panel -->
-            <div class="col-lg-5">
-                <div class="panel panel-info">
-                    <div class="panel-heading"><strong>Task Panel – Step 2</strong></div>
-                    <div class="panel-body">
-                        <!-- Task 2 -->
-                        <p><strong>Task 2 – Inspect the URL</strong></p>
-                        <p class="small">
-                            Check the domain shown in the fake browser bar above.
-                            Compare it with the real company domain <code>acmecorp.com</code>.
-                        </p>
-                        <p class="small">
-                            Suggested flag:
-                            <code>FLAG{hr-acmecorp-pay.com}</code>
-                        </p>
-                        <div class="form-inline m-b-sm">
-                            <input type="text" class="form-control input-sm lab-flag-input" id="flagDomain"
-                                   placeholder="Enter domain flag">
-                            <button type="button" class="btn btn-default btn-sm"
-                                    onclick="checkFlag('flagDomain')">Check</button>
-                            <span class="label label-success" id="flagDomainOk" style="display:none;margin-left:6px;">Correct</span>
-                            <span class="label label-danger" id="flagDomainErr" style="display:none;margin-left:6px;">Try again</span>
-                        </div>
-                        <hr>
-
-                        <!-- Task 3 -->
-                        <p><strong>Task 3 – Hidden HTML Comment</strong></p>
-                        <p class="small">
-                            Right-click → <em>View page source</em> and search for <code>training_flag</code>.
-                            You will find a hidden flag in an HTML comment.
-                        </p>
-                        <p class="small">
-                            Example flag:
-                            <code>FLAG{cloned-website-found}</code>
-                        </p>
-                        <div class="form-inline m-b-sm">
-                            <input type="text" class="form-control input-sm lab-flag-input" id="flagHidden"
-                                   placeholder="Enter hidden flag">
-                            <button type="button" class="btn btn-default btn-sm"
-                                    onclick="checkFlag('flagHidden')">Check</button>
-                            <span class="label label-success" id="flagHiddenOk" style="display:none;margin-left:6px;">Correct</span>
-                            <span class="label label-danger" id="flagHiddenErr" style="display:none;margin-left:6px;">Try again</span>
-                        </div>
-                        <hr>
-
-                        <!-- Task 4 -->
-                        <p><strong>Task 4 – Credential Submission</strong></p>
-                        <p class="small">
-                            Enter any dummy email and password and submit the form.
-                            Read the training message to obtain the final flag.
-                        </p>
-                        <p class="small">
-                            Example flag:
-                            <code>FLAG{credentials-captured-safely}</code>
-                        </p>
-                        <div class="form-inline m-b-sm">
-                            <input type="text" class="form-control input-sm lab-flag-input" id="flagCreds"
-                                   placeholder="Enter final flag">
-                            <button type="button" class="btn btn-default btn-sm"
-                                    onclick="checkFlag('flagCreds')">Check</button>
-                            <span class="label label-success" id="flagCredsOk" style="display:none;margin-left:6px;">Correct</span>
-                            <span class="label label-danger" id="flagCredsErr" style="display:none;margin-left:6px;">Try again</span>
-                        </div>
-
-                        <hr>
-                        <p><strong>Lab Progress</strong></p>
-                        <p class="small">
-                            Flags found:
-                            <span id="labProgressCount">0</span> / 3
-                        </p>
-                        <div id="labCompletedBox" class="alert alert-success" style="display:none;">
-                            <strong>Well done!</strong> You have completed Lab 1 – Clone Phishing.
-                            Final completion flag:
-                            <code>FLAG{clone-phishing-lab-completed}</code>
-                        </div>
-                    </div>
-                </div>
+            <h5 class="card-title mb-1">Lab 1 – Clone Phishing</h5>
+            <p class="text-muted small mb-3">
+              Analyze a phishing email, open a cloned HR portal, find hidden flags, and
+              understand how credential-harvesting clone pages work.
+            </p>
+            <ul class="small mb-3">
+              <li>Phishing email simulation</li>
+              <li>Cloned login page</li>
+              <li>Flag-based learning flow</li>
+            </ul>
+            <div class="mt-auto">
+              <a href="lab_1.html" class="btn btn-primary w-100">
+                Launch Lab
+              </a>
             </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Lab 2 – URL & Domain Analysis -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card lab-card shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-warning text-dark lab-badge">Planned</span>
+              <span class="badge bg-secondary lab-badge">Easy</span>
+            </div>
+            <h5 class="card-title mb-1">Lab 2 – URL &amp; Domain Analysis</h5>
+            <p class="text-muted small mb-3">
+              Practice spotting malicious URLs, typo-squatting, look-alike domains,
+              and unsafe links using hands-on examples.
+            </p>
+            <ul class="small mb-3">
+              <li>Safe vs unsafe URL classification</li>
+              <li>Domain structure breakdown</li>
+              <li>Hover-to-reveal link destinations</li>
+            </ul>
+            <div class="mt-auto">
+              <!-- When you build this lab, change href to your file, e.g. lab_2_url_domain.html and remove disabled -->
+              <button class="btn btn-outline-secondary w-100" disabled>
+                Coming Soon
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 3 – Advanced Social Engineering -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card lab-card shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-warning text-dark lab-badge">Planned</span>
+              <span class="badge bg-secondary lab-badge">Medium → Hard</span>
+            </div>
+            <h5 class="card-title mb-1">Lab 3 – Advanced Social Engineering</h5>
+            <p class="text-muted small mb-3">
+              Experience CEO fraud and pressure-based social engineering with realistic
+              emails and decision-making scenarios.
+            </p>
+            <ul class="small mb-3">
+              <li>Urgency and authority exploitation</li>
+              <li>Pretext analysis</li>
+              <li>Multi-step social engineering flow</li>
+            </ul>
+            <div class="mt-auto">
+              <button class="btn btn-outline-secondary w-100" disabled>
+                Coming Soon
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 4 – Phishing Detection Using Technical Tools -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card lab-card shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-warning text-dark lab-badge">Planned</span>
+              <span class="badge bg-secondary lab-badge">Medium</span>
+            </div>
+            <h5 class="card-title mb-1">Lab 4 – Phishing Detection Using Technical Tools</h5>
+            <p class="text-muted small mb-3">
+              Use simulated tools like header analyzers and URL reputation checks to
+              investigate suspicious messages.
+            </p>
+            <ul class="small mb-3">
+              <li>Email header analysis</li>
+              <li>SPF / IP checks (simulated)</li>
+              <li>Redirect chain inspection</li>
+            </ul>
+            <div class="mt-auto">
+              <button class="btn btn-outline-secondary w-100" disabled>
+                Coming Soon
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 5 – Phishing via Social Media & IM -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card lab-card shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-warning text-dark lab-badge">Planned</span>
+              <span class="badge bg-secondary lab-badge">Easy → Medium</span>
+            </div>
+            <h5 class="card-title mb-1">Lab 5 – Phishing via Social Media &amp; IM</h5>
+            <p class="text-muted small mb-3">
+              See how attackers abuse WhatsApp, Instagram, LinkedIn and other platforms
+              to deliver phishing links and fake offers.
+            </p>
+            <ul class="small mb-3">
+              <li>Shortened link expansion</li>
+              <li>Fake profile indicators</li>
+              <li>Chat-based phishing scenarios</li>
+            </ul>
+            <div class="mt-auto">
+              <button class="btn btn-outline-secondary w-100" disabled>
+                Coming Soon
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 6 – Business Email Compromise (BEC) -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card lab-card shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-warning text-dark lab-badge">Planned</span>
+              <span class="badge bg-secondary lab-badge">Hard</span>
+            </div>
+            <h5 class="card-title mb-1">Lab 6 – Business Email Compromise (BEC)</h5>
+            <p class="text-muted small mb-3">
+              Investigate a realistic BEC scenario where an attacker impersonates senior
+              management to redirect payments.
+            </p>
+            <ul class="small mb-3">
+              <li>SPF / DKIM / DMARC awareness</li>
+              <li>Reply-To vs From mismatch</li>
+              <li>Invoice / payment fraud workflow</li>
+            </ul>
+            <div class="mt-auto">
+              <button class="btn btn-outline-secondary w-100" disabled>
+                Coming Soon
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
-</div>
-{{end}}
 
-{{define "scripts"}}
-<script>
-// Hard-coded correct flags for this lab
-var flagAnswers = {
-    flagDomain: "FLAG{hr-acmecorp-pay.com}",
-    flagHidden: "FLAG{cloned-website-found}",
-    flagCreds:  "FLAG{credentials-captured-safely}"
-};
+    <!-- Footer -->
+    <div class="mt-4 text-center text-muted lab-footer-text">
+      Phishing Awareness Labs • Final Year Project
+    </div>
+  </div>
 
-var flagStatus = {
-    flagDomain: false,
-    flagHidden: false,
-    flagCreds:  false
-};
-
-// Switch from email view to login view
-document.addEventListener("DOMContentLoaded", function () {
-    var openCloneBtn   = document.getElementById("openCloneBtn");
-    var emailScreen    = document.getElementById("lab-email-screen");
-    var loginScreen    = document.getElementById("lab-login-screen");
-    var cloneForm      = document.getElementById("cloneLoginForm");
-    var trainingResult = document.getElementById("training-result");
-
-    if (openCloneBtn) {
-        openCloneBtn.addEventListener("click", function () {
-            emailScreen.style.display = "none";
-            loginScreen.style.display = "block";
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-    }
-
-    if (cloneForm) {
-        cloneForm.addEventListener("submit", function (e) {
-            e.preventDefault();
-            var email    = document.getElementById("email").value.trim();
-            var password = document.getElementById("password").value.trim();
-
-            if (email && password) {
-                trainingResult.style.display = "block";
-                trainingResult.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
-        });
-    }
-});
-
-// Generic flag checker
-function checkFlag(flagId) {
-    var input     = document.getElementById(flagId);
-    var okLabel   = document.getElementById(flagId + "Ok");
-    var errLabel  = document.getElementById(flagId + "Err");
-    var expected  = flagAnswers[flagId];
-
-    if (!input || !okLabel || !errLabel || !expected) {
-        return;
-    }
-
-    var value = input.value.trim();
-
-    if (value === expected) {
-        okLabel.style.display  = "inline-block";
-        errLabel.style.display = "none";
-        flagStatus[flagId]     = true;
-    } else {
-        okLabel.style.display  = "none";
-        errLabel.style.display = "inline-block";
-        flagStatus[flagId]     = false;
-    }
-
-    updateLabProgress();
-}
-
-// Update progress + completion box
-function updateLabProgress() {
-    var count = 0;
-    Object.keys(flagStatus).forEach(function (k) {
-        if (flagStatus[k]) {
-            count++;
-        }
-    });
-
-    var counter = document.getElementById("labProgressCount");
-    if (counter) {
-        counter.textContent = count.toString();
-    }
-
-    var completeBox = document.getElementById("labCompletedBox");
-    if (completeBox) {
-        if (count === 3) {
-            completeBox.style.display = "block";
-        } else {
-            completeBox.style.display = "none";
-        }
-    }
-}
-</script>
-{{end}}
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
